@@ -48,7 +48,9 @@ export interface Restaurant {
   cuisine: string;
   subCuisine: string;
   location: string;
-  coordinates: string;
+  coordinatesText: string;
+  lng: number;
+  lat: number;
   grade: number;
   level: BiosecurityLevel;
   auditCycle: string;

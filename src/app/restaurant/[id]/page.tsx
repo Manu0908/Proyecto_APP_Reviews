@@ -18,6 +18,9 @@ export default function RestaurantDetailPage() {
 
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [isValidated, setIsValidated] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportReason, setReportReason] = useState("difamacion");
 
   // Nivel textual y colores según la escala de 5 niveles
   const levelLabels = {
@@ -31,13 +34,13 @@ export default function RestaurantDetailPage() {
   return (
     <>
       <TopAppBar
-        title="Dossier de Transparencia"
+        title="Dossier Sanitario"
         showBack={true}
-        subtitle="Auditoría Sanitaria"
+        subtitle="Auditoría de Bioseguridad"
       />
 
       <main className="flex-1 flex flex-col pb-28 overflow-x-hidden">
-        {/* Hero Photography with Oceanic Midnight Vignette Bleed */}
+        {/* Hero Fotográfico con viñeta oceánica profunda */}
         <section className="relative w-full h-64 overflow-hidden bg-surface-container-lowest">
           <div className="absolute inset-0 z-0">
             <Image
@@ -51,7 +54,7 @@ export default function RestaurantDetailPage() {
             <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-background/80" />
           </div>
 
-          {/* Live Monitoring Floating Pill */}
+          {/* Pastilla Flotante de Monitoreo */}
           <div className="absolute top-4 left-4 z-10">
             <div className="glass-panel px-3 py-1 rounded-full flex items-center gap-2 border border-outline-variant/40">
               <span className="relative flex h-2 w-2">
@@ -64,7 +67,7 @@ export default function RestaurantDetailPage() {
             </div>
           </div>
 
-          {/* Substrate Coordinates */}
+          {/* Coordenadas & Certificado */}
           <div className="absolute bottom-4 left-4 right-4 z-10 flex justify-between items-end">
             <div>
               <div className="flex items-center gap-1.5 mb-1 text-primary">
@@ -75,7 +78,7 @@ export default function RestaurantDetailPage() {
                   location_on
                 </span>
                 <span className="font-label-caps tracking-widest text-[11px] text-tertiary">
-                  {restaurant.coordinates}
+                  {restaurant.coordinatesText}
                 </span>
               </div>
               <span className="font-label-caps text-primary uppercase text-[10px] tracking-widest bg-surface-container-low/80 px-2 py-0.5 rounded border border-outline-variant/30">
@@ -91,15 +94,15 @@ export default function RestaurantDetailPage() {
                 verified
               </span>
               <span className="font-label-caps text-[9.5px] text-on-surface">
-                CERTIFICADO ISO-22000
+                NORMA ISO-22000
               </span>
             </div>
           </div>
         </section>
 
-        {/* Dossier Content */}
+        {/* Contenido del Dossier */}
         <div className="px-space-md pt-3 flex flex-col gap-5">
-          {/* Header & Gastronomic Title */}
+          {/* Encabezado Culinario */}
           <section className="flex flex-col gap-1">
             <div className="flex items-center justify-between">
               <span className="font-label-caps text-primary tracking-widest text-[11px] uppercase">
@@ -109,7 +112,7 @@ export default function RestaurantDetailPage() {
                 {restaurant.auditCycle}
               </span>
             </div>
-            <h1 className="font-headline-lg-mobile text-[30px] text-on-surface tracking-tight font-normal">
+            <h1 className="font-headline-lg-mobile text-[28px] text-on-surface tracking-tight font-normal">
               {restaurant.name}
             </h1>
             <p className="font-body-sm text-[13px] text-on-surface-variant leading-relaxed">
@@ -117,12 +120,11 @@ export default function RestaurantDetailPage() {
             </p>
           </section>
 
-          {/* Prominent Biosecurity Grade Hero Widget (Concentric Ring Gauge) */}
+          {/* Widget de Grado Concéntrico Circular */}
           <section className="glass-panel glow-aura rounded-xl p-5 border border-outline-variant/40 relative overflow-hidden">
             <div className="absolute -top-12 -right-12 w-48 h-48 bg-primary-container/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex flex-col items-center text-center relative z-10">
-              {/* Concentric Emissive Ring Gauge */}
               <div className="relative w-36 h-36 flex items-center justify-center my-1">
                 <svg
                   className="w-full h-full transform -rotate-90"
@@ -160,16 +162,16 @@ export default function RestaurantDetailPage() {
                 </svg>
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="font-metric-display text-[42px] leading-none tracking-tighter text-on-surface font-semibold">
+                  <span className="font-metric-display text-[40px] leading-none tracking-tighter text-on-surface font-semibold">
                     {restaurant.grade}
                   </span>
                   <span className="font-label-caps text-primary tracking-widest text-[9px] mt-0.5">
-                    SCORE / 100
+                    PUNTOS / 100
                   </span>
                 </div>
               </div>
 
-              {/* Official Grade Label */}
+              {/* Sello de Grado */}
               <div className="inline-flex items-center gap-2 mt-2 px-3 py-1 rounded-full bg-secondary-container/40 border border-primary/30 glow-ring">
                 <span
                   className="material-symbols-outlined text-[16px] text-primary"
@@ -185,13 +187,13 @@ export default function RestaurantDetailPage() {
 
               <div className="w-full my-4 border-t border-outline-variant/30" />
 
-              {/* Metadata Grid */}
+              {/* Metadatos */}
               <div className="w-full grid grid-cols-2 gap-3 text-left">
                 <div className="bg-surface-container-low/70 p-2.5 rounded-lg border border-outline-variant/20">
                   <span className="font-label-caps text-tertiary block text-[9.5px] mb-0.5">
                     ÚLTIMA AUDITORÍA
                   </span>
-                  <span className="font-label-md text-on-surface font-medium text-[13px]">
+                  <span className="font-label-md text-on-surface font-medium text-[12.5px]">
                     {restaurant.auditDate}
                   </span>
                   <span className="font-body-sm text-[11px] text-on-surface-variant block mt-0.5">
@@ -201,10 +203,10 @@ export default function RestaurantDetailPage() {
 
                 <div className="bg-surface-container-low/70 p-2.5 rounded-lg border border-outline-variant/20">
                   <span className="font-label-caps text-tertiary block text-[9.5px] mb-0.5">
-                    ORGANISMO AUDITOR
+                    ACREDITACIÓN
                   </span>
                   <div className="flex items-center gap-1 text-primary">
-                    <span className="font-label-md text-on-surface font-medium text-[13px] truncate">
+                    <span className="font-label-md text-on-surface font-medium text-[12.5px] truncate">
                       {restaurant.accreditation}
                     </span>
                   </div>
@@ -222,10 +224,10 @@ export default function RestaurantDetailPage() {
             </div>
           </section>
 
-          {/* Verified Visit Receipt Badge */}
-          <section className="glass-card rounded-xl p-3.5 border border-outline-variant/30 flex items-center justify-between gap-3">
+          {/* Distintivo de Vitrina QR (Botón Destacado) */}
+          <section className="glass-card rounded-xl p-3.5 border border-primary/40 bg-secondary-container/20 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-primary">
+              <div className="w-10 h-10 rounded-lg bg-surface-container-high border border-primary/40 flex items-center justify-center text-primary">
                 <span
                   className="material-symbols-outlined text-[22px]"
                   data-icon="qr_code_2"
@@ -234,9 +236,39 @@ export default function RestaurantDetailPage() {
                 </span>
               </div>
               <div>
+                <span className="font-label-caps text-primary text-[10px] tracking-wider uppercase block">
+                  Distintivo de Escaparate
+                </span>
+                <p className="font-label-md text-on-surface text-[12px]">
+                  Calcomanía física con QR para vitrinas
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setShowQRModal(true)}
+              className="px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container font-label-md text-[11.5px] font-semibold active:scale-95 transition-all shadow-sm"
+            >
+              Ver QR
+            </button>
+          </section>
+
+          {/* Insignia de Visita Verificada */}
+          <section className="glass-card rounded-xl p-3.5 border border-outline-variant/30 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-primary">
+                <span
+                  className="material-symbols-outlined text-[20px]"
+                  data-icon="receipt_long"
+                >
+                  receipt_long
+                </span>
+              </div>
+              <div>
                 <div className="flex items-center gap-1.5">
                   <span className="font-label-caps text-primary text-[10px] tracking-wider uppercase">
-                    Protocolo de Visita Verificada
+                    Protocolo de Ticket Verificado
                   </span>
                   <span className="w-1.5 h-1.5 rounded-full bg-primary" />
                 </div>
@@ -255,33 +287,26 @@ export default function RestaurantDetailPage() {
               className="px-2.5 py-1.5 rounded-md bg-secondary-container/50 border border-outline-variant/40 text-on-surface hover:text-primary transition-colors flex items-center gap-1"
             >
               <span className="font-label-caps text-[10px]">
-                {isValidated ? "VÁLIDO ✓" : "VALIDAR"}
-              </span>
-              <span
-                className="material-symbols-outlined text-[13px]"
-                data-icon="north_east"
-              >
-                north_east
+                {isValidated ? "VÁLIDO ✓" : "COMPROBAR"}
               </span>
             </button>
           </section>
 
-          {/* Criteria Breakdown */}
+          {/* Desglose de Criterios */}
           <div className="flex items-center justify-between pt-1">
             <div>
               <span className="font-label-caps text-primary tracking-widest text-[10px] uppercase">
                 ESTÁNDARES DE BIOSEGURIDAD
               </span>
               <h3 className="font-headline-sm text-[19px] text-on-surface">
-                Desglose de Criterios
+                Desglose de Criterios Sanitarios
               </h3>
             </div>
             <span className="font-label-caps text-on-surface-variant text-[11px]">
-              5 de 5 Aprobados
+              {restaurant.detailedMetrics.length} de {restaurant.detailedMetrics.length} Evaluados
             </span>
           </div>
 
-          {/* Criteria List */}
           <div className="flex flex-col gap-3">
             {restaurant.detailedMetrics.map((m) => (
               <div
@@ -333,7 +358,7 @@ export default function RestaurantDetailPage() {
             ))}
           </div>
 
-          {/* Live Chronology */}
+          {/* Cronología de Sensores */}
           {restaurant.chronology.length > 0 && (
             <section className="glass-panel rounded-xl p-4 border border-outline-variant/30">
               <div className="flex items-center justify-between mb-3.5 pb-2 border-b border-outline-variant/20">
@@ -345,7 +370,7 @@ export default function RestaurantDetailPage() {
                     schedule
                   </span>
                   <h4 className="font-headline-sm text-[17px] text-on-surface">
-                    Cronología de Sensores en Vivo
+                    Registro de Monitoreo en Vivo
                   </h4>
                 </div>
                 <span className="font-label-caps text-primary text-[10px]">
@@ -374,38 +399,40 @@ export default function RestaurantDetailPage() {
             </section>
           )}
 
-          {/* Right of Reply / Owner Claim Section */}
-          <section className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 text-center">
-            <span
-              className="material-symbols-outlined text-primary text-[26px] mb-1"
-              data-icon="storefront"
-            >
-              storefront
-            </span>
-            <h4 className="font-headline-sm text-[16px] text-on-surface font-medium mb-1">
-              ¿Administras este restaurante?
+          {/* Protección contra Difamación & Reclamación */}
+          <section className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 text-center flex flex-col gap-2">
+            <h4 className="font-headline-sm text-[16px] text-on-surface font-medium">
+              Garantía de Transparencia Sanitaria
             </h4>
             <p className="font-body-sm text-[12px] text-on-surface-variant leading-relaxed">
-              Reclama la titularidad oficial de tu establecimiento para responder a auditorías comunitarias y registrar certificaciones sanitarias vigentes.
+              ¿Detectas información errónea o presunta difamación sobre este restaurante? Los propietarios y la comunidad pueden apelar formalmente.
             </p>
-            <button
-              onClick={() =>
-                alert("Flujo fantasma de reclamo: Permite al dueño subir prueba de personería jurídica.")
-              }
-              className="mt-3 inline-block px-4 py-2 rounded-full border border-primary/40 bg-surface-container-high/80 text-primary font-label-md text-[12px] hover:bg-primary-container hover:text-on-primary-container transition-all"
-            >
-              Reclamar este Perfil Oficial
-            </button>
+            <div className="flex gap-2 justify-center pt-1">
+              <button
+                onClick={() => setShowReportModal(true)}
+                className="px-3.5 py-1.5 rounded-full border border-outline-variant/50 text-outline hover:text-red-300 hover:border-red-400 font-label-md text-[11.5px] transition-colors"
+              >
+                Reportar Reseña Injusta
+              </button>
+              <button
+                onClick={() =>
+                  alert("Flujo de reclamación: Permite al dueño autenticado subir su cédula jurídica.")
+                }
+                className="px-3.5 py-1.5 rounded-full bg-secondary-container/60 border border-primary/40 text-primary font-label-md text-[11.5px] transition-all hover:bg-primary-container hover:text-on-primary-container"
+              >
+                Reclamar Restaurante
+              </button>
+            </div>
           </section>
         </div>
       </main>
 
-      {/* Floating Action Dock */}
-      <div className="fixed bottom-14 left-0 right-0 z-40 flex justify-center p-3 pointer-events-none max-w-md mx-auto">
+      {/* Dock Inferior Flotante de Acciones */}
+      <div className="fixed bottom-14 left-0 right-0 z-30 flex justify-center p-3 pointer-events-none max-w-md mx-auto">
         <div className="w-full pointer-events-auto bg-surface-container-lowest/90 backdrop-blur-xl border border-outline-variant/40 rounded-full p-1.5 shadow-2xl flex items-center gap-2">
           <button
             onClick={() =>
-              alert("Generando PDF oficial de auditoría sanitaria con sello QR...")
+              alert("Generando informe clínico oficial en PDF con hash de bioseguridad...")
             }
             className="flex-1 py-2.5 px-3 rounded-full border border-outline-variant/40 bg-surface-container/60 hover:border-primary text-on-surface hover:text-primary transition-colors flex items-center justify-center gap-1.5 active:scale-95 text-[12px] font-medium"
           >
@@ -438,6 +465,114 @@ export default function RestaurantDetailPage() {
       </div>
 
       <BottomNavBar onOpenAudit={() => setIsAuditModalOpen(true)} />
+
+      {/* Modal de Calcomanía Oficial con QR */}
+      {showQRModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-container-lowest/85 backdrop-blur-md">
+          <div className="w-full max-w-sm bg-surface-container-low border border-primary/40 rounded-2xl p-5 shadow-2xl flex flex-col items-center text-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+              <span className="material-symbols-outlined text-[22px]" data-icon="qr_code_2">
+                qr_code_2
+              </span>
+            </div>
+            <h3 className="font-headline-sm text-[18px] text-on-surface">
+              Distintivo de Escaparate Oficial
+            </h3>
+            <p className="font-body-sm text-[12px] text-on-surface-variant">
+              Calcomanía oficial para pegar en la entrada de <strong className="text-on-surface">{restaurant.name}</strong>.
+            </p>
+
+            {/* QR Mockup Visual */}
+            <div className="p-4 rounded-xl bg-white flex flex-col items-center justify-center my-1 shadow-lg">
+              <div className="w-36 h-36 bg-neutral-900 rounded-lg flex items-center justify-center text-white text-[12px] font-mono p-2 text-center">
+                [ QR DINÁMICO: {restaurant.verifiedProtocolHash} ]
+              </div>
+              <span className="text-neutral-800 text-[10px] font-bold mt-1 tracking-wider uppercase">
+                {levelLabels[restaurant.level]}
+              </span>
+            </div>
+
+            <div className="flex gap-2 w-full pt-1">
+              <button
+                onClick={() => {
+                  alert("Descargando PDF vectorial listo para imprimir calcomanía de 15x15cm...");
+                  setShowQRModal(false);
+                }}
+                className="flex-1 py-2.5 rounded-full bg-primary-container text-on-primary-container font-label-md text-[12px] font-semibold"
+              >
+                Descargar Calcomanía PDF
+              </button>
+              <button
+                onClick={() => setShowQRModal(false)}
+                className="px-4 py-2.5 rounded-full bg-surface-container-high border border-outline-variant/40 text-on-surface text-[12px] font-label-md"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Reporte contra Difamación */}
+      {showReportModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-container-lowest/85 backdrop-blur-md">
+          <div className="w-full max-w-sm bg-surface-container-low border border-red-500/30 rounded-2xl p-5 shadow-2xl flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-red-300">
+                <span className="material-symbols-outlined text-[20px]" data-icon="report">
+                  report
+                </span>
+                <h3 className="font-headline-sm text-[16px] text-on-surface font-medium">
+                  Reportar por Difamación
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowReportModal(false)}
+                className="text-outline hover:text-on-surface"
+              >
+                <span className="material-symbols-outlined text-[18px]" data-icon="close">
+                  close
+                </span>
+              </button>
+            </div>
+            <p className="font-body-sm text-[12px] text-on-surface-variant">
+              Protegemos a los negocios contra reseñas maliciosas sin sustento.
+            </p>
+
+            <div className="flex flex-col gap-2 pt-1">
+              <label className="text-[11px] font-label-caps text-outline uppercase">
+                Motivo de la Impugnación
+              </label>
+              <select
+                value={reportReason}
+                onChange={(e) => setReportReason(e.target.value)}
+                className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-xl px-3 py-2 text-[12.5px] text-on-surface focus:outline-none"
+              >
+                <option value="difamacion">Difamación o acusación falsa de plagas</option>
+                <option value="competencia">Sospecha de guerra sucia comercial</option>
+                <option value="ofensivo">Lenguaje discriminatorio u ofensivo</option>
+                <option value="sin_visita">Usuario nunca consumió en el local</option>
+              </select>
+
+              <textarea
+                rows={3}
+                placeholder="Explica los hechos o adjunta prueba de subsanación..."
+                className="w-full bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-3 text-[12px] text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container"
+              />
+
+              <button
+                onClick={() => {
+                  alert("Reporte enviado a moderación. El restaurante recibirá respuesta en menos de 24 horas.");
+                  setShowReportModal(false);
+                }}
+                className="w-full py-2.5 rounded-full bg-red-950/80 border border-red-500/50 text-red-200 font-label-md text-[12.5px] font-semibold mt-1"
+              >
+                Enviar a Veeduría Sanitaria
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <QuickAuditModal
         isOpen={isAuditModalOpen}

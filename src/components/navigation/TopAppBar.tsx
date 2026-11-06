@@ -10,7 +10,7 @@ interface TopAppBarProps {
 }
 
 export function TopAppBar({
-  title = "Hygiene Index",
+  title = "Índice de Higiene",
   showBack = false,
   onFilterClick,
   subtitle,
@@ -34,7 +34,7 @@ export function TopAppBar({
         ) : (
           <Link
             href="/explore"
-            aria-label="Buscar espacios culinarios verificados"
+            aria-label="Buscar restaurantes y locales"
             className="w-9 h-9 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150"
           >
             <span className="material-symbols-outlined" data-icon="search">
@@ -45,7 +45,7 @@ export function TopAppBar({
 
         <div>
           {subtitle && (
-            <span className="font-label-caps text-label-caps text-primary uppercase block tracking-wider text-[10px]">
+            <span className="font-label-caps text-primary uppercase block tracking-wider text-[10px]">
               {subtitle}
             </span>
           )}
@@ -57,9 +57,9 @@ export function TopAppBar({
 
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/80 border border-outline-variant/40">
-          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
           <span className="font-label-caps text-[9px] text-secondary uppercase tracking-widest">
-            Live Audit
+            En Vivo
           </span>
         </div>
 

@@ -14,7 +14,7 @@ export default function ExplorePage() {
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
   const [auditTarget, setAuditTarget] = useState<Restaurant | null>(null);
 
-  // Filtrado reactivo
+  // Filtrado reactivo en español
   const filteredRestaurants = MOCK_RESTAURANTS.filter((r) => {
     const matchesSearch =
       r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -27,23 +27,23 @@ export default function ExplorePage() {
 
   const levelBadges: Record<BiosecurityLevel, { label: string; style: string }> = {
     organico: {
-      label: "Orgánico",
+      label: "🌿 Nivel 1: Orgánico",
       style: "bg-amber-950/60 text-amber-300 border-amber-600/40",
     },
     filtrado: {
-      label: "Filtrado",
+      label: "⏳ Nivel 2: Filtrado",
       style: "bg-orange-950/60 text-orange-300 border-orange-500/40",
     },
     antiseptico: {
-      label: "Antiséptico",
+      label: "🛡️ Nivel 3: Antiséptico",
       style: "bg-teal-950/60 text-teal-300 border-teal-500/40",
     },
     esterilizado: {
-      label: "Esterilizado",
+      label: "⚡ Nivel 4: Esterilizado",
       style: "bg-purple-950/60 text-purple-300 border-purple-400/40",
     },
     aseptico: {
-      label: "Aséptico Platinum",
+      label: "💎 Nivel 5: Aséptico",
       style: "bg-secondary-container/60 text-primary border-primary/40",
     },
   };
@@ -56,7 +56,7 @@ export default function ExplorePage() {
       />
 
       <main className="flex-1 flex flex-col px-space-md pt-3 pb-24 gap-4">
-        {/* Search Input Bar */}
+        {/* Barra de Búsqueda */}
         <div className="relative flex items-center">
           <span
             className="material-symbols-outlined text-outline absolute left-3.5 text-[20px]"
@@ -68,7 +68,7 @@ export default function ExplorePage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar por nombre, cocina o barrio..."
+            placeholder="Buscar por nombre, especialidad o zona..."
             className="w-full bg-surface-container-low/90 border border-outline-variant/40 rounded-full pl-11 pr-4 py-2.5 text-body-sm text-[13px] text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container/20 transition-all"
           />
           {searchQuery && (
@@ -83,7 +83,7 @@ export default function ExplorePage() {
           )}
         </div>
 
-        {/* Filter Pills Carousel */}
+        {/* Carrusel de Filtros de Bioseguridad */}
         <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1">
           <button
             onClick={() => setSelectedFilter("all")}
@@ -127,13 +127,13 @@ export default function ExplorePage() {
           </button>
         </div>
 
-        {/* Results Counter */}
-        <div className="flex items-center justify-between text-outline text-[11px] font-label-caps tracking-wider px-1">
-          <span>{filteredRestaurants.length} RESTAURANTES BIO-AUDITADOS</span>
-          <span>ORDENADO POR GRADO</span>
+        {/* Contador de Resultados */}
+        <div className="flex items-center justify-between text-outline text-[10.5px] font-label-caps tracking-wider px-1">
+          <span>{filteredRestaurants.length} RESTAURANTES EVALUADOS</span>
+          <span>ORDENADO POR HIGIENE</span>
         </div>
 
-        {/* Restaurant Cards List */}
+        {/* Lista de Tarjetas */}
         <div className="flex flex-col gap-3">
           {filteredRestaurants.map((restaurant) => {
             const badge = levelBadges[restaurant.level];
@@ -155,11 +155,11 @@ export default function ExplorePage() {
                     </div>
 
                     <div>
-                      <h2 className="font-headline-sm text-[17px] text-on-surface leading-tight">
+                      <h2 className="font-headline-sm text-[16.5px] text-on-surface leading-tight">
                         {restaurant.name}
                       </h2>
                       <p className="font-body-sm text-[12px] text-on-surface-variant mt-0.5">
-                        {restaurant.cuisine} • {restaurant.location.split(",")[0]}
+                        {restaurant.cuisine} • {restaurant.location}
                       </p>
                       <div className="flex items-center gap-1.5 mt-1.5">
                         <span
@@ -171,7 +171,7 @@ export default function ExplorePage() {
                     </div>
                   </div>
 
-                  {/* Concentric Score Chip */}
+                  {/* Chip Concéntrico de Puntuación */}
                   <div className="shrink-0 flex flex-col items-end">
                     <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container/60 border border-primary/40 shadow-sm">
                       <span
@@ -191,11 +191,11 @@ export default function ExplorePage() {
                   </div>
                 </div>
 
-                {/* Micro indicators bar */}
+                {/* Métricas Resumidas */}
                 <div className="grid grid-cols-3 gap-2 pt-2 border-t border-outline-variant/20 text-center">
                   <div className="bg-surface-container-low/60 p-1.5 rounded-lg">
                     <span className="font-label-caps text-[8.5px] text-outline block">
-                      SUP. PURITY
+                      SUP. LIMPIA
                     </span>
                     <span className="font-metric-sm text-[12px] text-on-surface font-medium">
                       {restaurant.metrics.surfacePurity}%
@@ -219,7 +219,7 @@ export default function ExplorePage() {
                   </div>
                 </div>
 
-                {/* Actions */}
+                {/* Acciones */}
                 <div className="flex items-center gap-2 pt-1">
                   <Link
                     href={`/restaurant/${restaurant.id}`}
