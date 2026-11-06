@@ -6,12 +6,17 @@ import Image from "next/image";
 import { TopAppBar } from "@/components/navigation/TopAppBar";
 import { BottomNavBar } from "@/components/navigation/BottomNavBar";
 import { QuickAuditModal } from "@/components/audit/QuickAuditModal";
+import { FilterModal } from "@/components/common/FilterModal";
 import { MOCK_RESTAURANTS } from "@/data/mockData";
 import { Restaurant, BiosecurityLevel } from "@/types";
 
 export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const [maxDistance, setMaxDistance] = useState(10);
+  const [onlyVerifiedReceipt, setOnlyVerifiedReceipt] = useState(false);
+  const [zeroInfractionsOnly, setZeroInfractionsOnly] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [auditTarget, setAuditTarget] = useState<Restaurant | null>(null);
 
   // Filtrado reactivo en español
@@ -21,9 +26,19 @@ export default function ExplorePage() {
       r.cuisine.toLowerCase().includes(searchQuery.toLowerCase()) ||
       r.location.toLowerCase().includes(searchQuery.toLowerCase());
 
-    if (selectedFilter === "all") return matchesSearch;
-    return matchesSearch && r.level === selectedFilter;
+    if (!matchesSearch) return false;
+    if (selectedFilter !== "all" && r.level !== selectedFilter) return false;
+    if (zeroInfractionsOnly && r.metrics.infractions > 0) return false;
+    return true;
   });
+
+  const handleReset = () => {
+    setSelectedFilter("all");
+    setMaxDistance(10);
+    setOnlyVerifiedReceipt(false);
+    setZeroInfractionsOnly(false);
+    setSearchQuery("");
+  };
 
   const levelBadges: Record<BiosecurityLevel, { label: string; style: string }> = {
     organico: {
@@ -53,6 +68,7 @@ export default function ExplorePage() {
       <TopAppBar
         title="Directorio Sanitario"
         subtitle="Exploración Bio-Auditada"
+        onFilterClick={() => setIsFilterModalOpen(true)}
       />
 
       <main className="flex-1 flex flex-col px-space-md pt-3 pb-24 gap-4">
@@ -252,6 +268,20 @@ export default function ExplorePage() {
         onClose={() => setAuditTarget(null)}
         restaurantName={auditTarget?.name}
         restaurantLocation={auditTarget?.location}
+      />
+
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        selectedLevel={selectedFilter}
+        onSelectLevel={setSelectedFilter}
+        maxDistance={maxDistance}
+        onSelectDistance={setMaxDistance}
+        onlyVerifiedReceipt={onlyVerifiedReceipt}
+        onToggleVerifiedReceipt={setOnlyVerifiedReceipt}
+        zeroInfractionsOnly={zeroInfractionsOnly}
+        onToggleZeroInfractions={setZeroInfractionsOnly}
+        onReset={handleReset}
       />
     </>
   );

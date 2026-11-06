@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { TopAppBar } from "@/components/navigation/TopAppBar";
 import { BottomNavBar } from "@/components/navigation/BottomNavBar";
 import { QuickAuditModal } from "@/components/audit/QuickAuditModal";
+import { FilterModal } from "@/components/common/FilterModal";
 import { MOCK_RESTAURANTS } from "@/data/mockData";
 import { Restaurant } from "@/types";
 
@@ -27,22 +28,33 @@ export default function MapPage() {
     MOCK_RESTAURANTS[0]
   );
   const [activeFilter, setActiveFilter] = useState("all");
+  const [maxDistance, setMaxDistance] = useState(10);
+  const [onlyVerifiedReceipt, setOnlyVerifiedReceipt] = useState(false);
+  const [zeroInfractionsOnly, setZeroInfractionsOnly] = useState(false);
+
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isUVMode, setIsUVMode] = useState(false);
 
-  // Filtrado de restaurantes
+  // Filtrado compuesto
   const displayedRestaurants = MOCK_RESTAURANTS.filter((r) => {
-    if (activeFilter === "all") return true;
-    return r.level === activeFilter;
+    if (activeFilter !== "all" && r.level !== activeFilter) return false;
+    if (zeroInfractionsOnly && r.metrics.infractions > 0) return false;
+    return true;
   });
+
+  const handleResetFilters = () => {
+    setActiveFilter("all");
+    setMaxDistance(10);
+    setOnlyVerifiedReceipt(false);
+    setZeroInfractionsOnly(false);
+  };
 
   return (
     <>
       <TopAppBar
         title="Índice Sanitario"
-        onFilterClick={() =>
-          alert("Filtros: Filtra por nivel de bioseguridad, distancia y tipo de cocina.")
-        }
+        onFilterClick={() => setIsFilterModalOpen(true)}
       />
 
       {/* Main Canvas con Mapa Interactivo MapLibre GL */}
@@ -266,6 +278,21 @@ export default function MapPage() {
         onClose={() => setIsAuditModalOpen(false)}
         restaurantName={selectedRestaurant.name}
         restaurantLocation={selectedRestaurant.location}
+      />
+
+      {/* Modal de Filtros Interactivo */}
+      <FilterModal
+        isOpen={isFilterModalOpen}
+        onClose={() => setIsFilterModalOpen(false)}
+        selectedLevel={activeFilter}
+        onSelectLevel={setActiveFilter}
+        maxDistance={maxDistance}
+        onSelectDistance={setMaxDistance}
+        onlyVerifiedReceipt={onlyVerifiedReceipt}
+        onToggleVerifiedReceipt={setOnlyVerifiedReceipt}
+        zeroInfractionsOnly={zeroInfractionsOnly}
+        onToggleZeroInfractions={setZeroInfractionsOnly}
+        onReset={handleResetFilters}
       />
     </>
   );
