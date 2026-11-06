@@ -65,6 +65,7 @@ export interface QuickAuditArea {
 export interface Restaurant {
   id: string;
   name: string;
+  shortName: string;
   tagline: string;
   cuisine: string;
   subCuisine: string;

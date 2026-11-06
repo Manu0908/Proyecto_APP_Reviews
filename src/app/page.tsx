@@ -27,7 +27,7 @@ export default function MapPage() {
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant>(
     MOCK_RESTAURANTS[0]
   );
-  const [selectedCity, setSelectedCity] = useState("Santa Marta");
+  const [selectedCity, setSelectedCity] = useState("all");
   const [activeFilter, setActiveFilter] = useState("all");
   const [maxDistance, setMaxDistance] = useState(10);
   const [onlyVerifiedReceipt, setOnlyVerifiedReceipt] = useState(false);
@@ -39,7 +39,9 @@ export default function MapPage() {
 
   // Filtrado compuesto con ciudad
   const displayedRestaurants = MOCK_RESTAURANTS.filter((r) => {
-    if (selectedCity !== "all" && r.city !== selectedCity) return false;
+    if (selectedCity !== "all" && r.city !== selectedCity && !r.city.includes(selectedCity)) {
+      return false;
+    }
     if (activeFilter !== "all" && r.level !== activeFilter) return false;
     if (zeroInfractionsOnly && r.metrics.infractions > 0) return false;
     return true;
@@ -47,8 +49,14 @@ export default function MapPage() {
 
   const handleCityChange = (city: string) => {
     setSelectedCity(city);
-    const firstInCity = MOCK_RESTAURANTS.find((r) => r.city === city) || MOCK_RESTAURANTS[0];
-    setSelectedRestaurant(firstInCity);
+    if (city === "all") {
+      setSelectedRestaurant(MOCK_RESTAURANTS[0]);
+    } else {
+      const firstInCity =
+        MOCK_RESTAURANTS.find((r) => r.city === city || r.city.includes(city)) ||
+        MOCK_RESTAURANTS[0];
+      setSelectedRestaurant(firstInCity);
+    }
   };
 
   const handleResetFilters = () => {
@@ -68,16 +76,20 @@ export default function MapPage() {
 
       {/* Main Canvas con Mapa Interactivo MapLibre GL */}
       <main className="relative w-full h-[calc(100vh-116px)] flex flex-col justify-between overflow-hidden">
-        {/* Controles de Filtros Flotantes Superiores */}
+        {/* Controles de Filtros Flotantes Superiores: Selector de Ciudades */}
         <div className="absolute top-3 left-0 right-0 z-20 px-space-md pointer-events-none">
           <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 pointer-events-auto">
-            {/* Selector de Ciudades Rápidas */}
-            {["Santa Marta", "Bogotá", "Medellín", "all"].map((city) => (
+            {[
+              { id: "all", label: "Toda Colombia" },
+              { id: "Santa Marta", label: "Santa Marta" },
+              { id: "Bogotá", label: "Bogotá" },
+              { id: "Medellín", label: "Medellín" },
+            ].map((city) => (
               <button
-                key={city}
-                onClick={() => handleCityChange(city)}
+                key={city.id}
+                onClick={() => handleCityChange(city.id)}
                 className={`shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-label-md font-label-md transition-all active:scale-95 border backdrop-blur-md shadow-md ${
-                  selectedCity === city
+                  selectedCity === city.id
                     ? "bg-primary-container text-on-primary-container border-primary/50 font-bold"
                     : "bg-surface-container-high/90 text-on-surface-variant border-outline-variant/40"
                 }`}
@@ -85,26 +97,27 @@ export default function MapPage() {
                 <span className="material-symbols-outlined text-[14px]" data-icon="location_on">
                   location_on
                 </span>
-                <span>{city === "all" ? "Toda Colombia" : city}</span>
+                <span>{city.label}</span>
               </button>
             ))}
-
-            {/* Toggle Modo UV */}
-            <button
-              onClick={() => setIsUVMode(!isUVMode)}
-              className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-label-md font-label-md transition-all active:scale-95 border backdrop-blur-md shadow-lg ${
-                isUVMode
-                  ? "bg-purple-900/80 text-purple-200 border-purple-400 shadow-[0_0_14px_rgba(168,85,247,0.5)]"
-                  : "bg-surface-container-high/90 text-on-surface-variant border-outline-variant/40 hover:border-primary/50"
-              }`}
-            >
-              <span className="material-symbols-outlined text-[15px]" data-icon="flare">
-                flare
-              </span>
-              <span>Modo UV {isUVMode ? "Activo" : "Off"}</span>
-            </button>
           </div>
         </div>
+
+        {/* Botón Flotante Fijo e Inamovible: Modo Luz Negra UV */}
+        <button
+          onClick={() => setIsUVMode(!isUVMode)}
+          className={`absolute top-14 right-3 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-label-md text-[11.5px] border backdrop-blur-xl shadow-xl transition-all active:scale-95 ${
+            isUVMode
+              ? "bg-purple-950/90 text-purple-200 border-purple-400 shadow-[0_0_16px_rgba(168,85,247,0.6)]"
+              : "bg-surface-container-high/90 text-on-surface-variant border-outline-variant/50 hover:border-purple-400/50"
+          }`}
+          title="Alternar Modo Luz Negra UV"
+        >
+          <span className="material-symbols-outlined text-[15px] text-purple-300" data-icon="flare">
+            flare
+          </span>
+          <span className="font-semibold">{isUVMode ? "UV ON" : "Luz UV"}</span>
+        </button>
 
         {/* Mapa Libre GL con soporte táctil, rotación y zoom */}
         <InteractiveMap

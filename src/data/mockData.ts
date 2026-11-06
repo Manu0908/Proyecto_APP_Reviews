@@ -5,6 +5,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
   {
     id: "los-maracuchos-gaira",
     name: "Comidas Rápidas Los Maracuchos",
+    shortName: "Los Maracuchos",
     tagline: "Hamburguesas Monumentales & Arepas Cabimeras",
     cuisine: "Comida Rápida Zuliana",
     subCuisine: "Plancha Callejera & Salsas",
@@ -145,6 +146,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
   {
     id: "donde-chucho-rodadero",
     name: "Donde Chucho Gourmet",
+    shortName: "Donde Chucho",
     tagline: "Alta Cocina de Mar & Tradición Samaria",
     cuisine: "Marisquería & Pescados",
     subCuisine: "Pescados al Horno & Ceviches",
@@ -236,6 +238,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
   {
     id: "pesqueria-bahia-taganga",
     name: "Pesquería Bahía Taganga",
+    shortName: "Bahía Taganga",
     tagline: "Ceviches Frescos & Sabor del Litoral",
     cuisine: "Marisquería Costera",
     subCuisine: "Pescado Frito & Cazuelas",
@@ -283,6 +286,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
   {
     id: "andres-carne-de-res",
     name: "Andrés Carne de Res",
+    shortName: "Andrés Carne de Res",
     tagline: "Paraíso de Parrilla & Tradición Colombiana",
     cuisine: "Parrilla Tradicional Colombiana",
     subCuisine: "Carnes Maduradas & Arepas",
@@ -333,7 +337,8 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
   // 5. Bogotá - La Candelaria (La Puerta Falsa)
   {
     id: "la-puerta-falsa",
-    name: "La Puerta Falsa (Desde 1816)",
+    name: "La Puerta Falsa",
+    shortName: "La Puerta Falsa",
     tagline: "Tradición Bogotana, Chocolate Santafereño & Tamales",
     cuisine: "Cocina Tradicional Andina",
     subCuisine: "Tamales, Ajiaco & Almojábanas",
@@ -381,6 +386,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
   {
     id: "mondongos-el-poblado",
     name: "Mondongo's El Poblado",
+    shortName: "Mondongo's",
     tagline: "El Auténtico Sabor Paisa con Cocina Industrial Abierta",
     cuisine: "Cocina Tradicional Antioqueña",
     subCuisine: "Mondongo, Cazuelas & Bandeja Paisa",

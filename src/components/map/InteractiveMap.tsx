@@ -82,9 +82,9 @@ export function InteractiveMap({
 
       if (isSelected) {
         el.innerHTML = `
-          <div class="mb-1.5 px-2 py-0.5 rounded-full bg-[#041016]/95 border border-primary/50 shadow-2xl flex items-center gap-1">
+          <div class="mb-1.5 px-2.5 py-1 rounded-full bg-[#041016]/95 border border-primary/50 shadow-2xl flex items-center gap-1.5 whitespace-nowrap">
             <span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_#adccd3]"></span>
-            <span class="text-[9.5px] font-semibold tracking-wider text-[#d8e4ee] uppercase">${restaurant.name.split(" ")[0]} • ${restaurant.grade}</span>
+            <span class="text-[10px] font-semibold tracking-wider text-[#d8e4ee]">${restaurant.shortName} • ${restaurant.grade}</span>
           </div>
           <div class="relative flex items-center justify-center">
             <div class="w-10 h-10 rounded-full bg-[#7b99a0]/25 beacon-pulse flex items-center justify-center">
@@ -100,7 +100,7 @@ export function InteractiveMap({
           <div class="w-7 h-7 rounded-full border ${badgeColor} flex items-center justify-center shadow-lg transition-transform hover:scale-110">
             <span class="text-[10px] font-semibold">${Math.round(restaurant.grade)}</span>
           </div>
-          <span class="mt-0.5 text-[8.5px] font-medium text-[#8b9293] bg-[#041016]/80 px-1 rounded uppercase tracking-wider">${restaurant.name.split(" ")[0]}</span>
+          <span class="mt-1 text-[9px] font-medium text-[#c1c8c9] bg-[#041016]/90 border border-white/10 px-1.5 py-0.5 rounded-full whitespace-nowrap tracking-wide shadow-sm">${restaurant.shortName}</span>
         `;
       }
 

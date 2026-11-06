@@ -21,10 +21,13 @@ export default function ExplorePage() {
 
   // Filtrado reactivo en español
   const filteredRestaurants = MOCK_RESTAURANTS.filter((r) => {
+    const q = searchQuery.toLowerCase();
     const matchesSearch =
-      r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.cuisine.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.location.toLowerCase().includes(searchQuery.toLowerCase());
+      r.name.toLowerCase().includes(q) ||
+      r.shortName.toLowerCase().includes(q) ||
+      r.cuisine.toLowerCase().includes(q) ||
+      r.city.toLowerCase().includes(q) ||
+      r.location.toLowerCase().includes(q);
 
     if (!matchesSearch) return false;
     if (selectedFilter !== "all" && r.level !== selectedFilter) return false;
