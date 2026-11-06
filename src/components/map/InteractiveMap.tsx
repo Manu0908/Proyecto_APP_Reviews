@@ -4,6 +4,11 @@ import { useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
 import { Restaurant } from "@/types";
 
+// Configurar la URL estática del worker de MapLibre en public para Webpack/Next.js
+if (typeof window !== "undefined") {
+  maplibregl.setWorkerUrl("/maplibre-gl-worker.js");
+}
+
 interface InteractiveMapProps {
   restaurants: Restaurant[];
   selectedRestaurant: Restaurant;
