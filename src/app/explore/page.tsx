@@ -1,0 +1,258 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { TopAppBar } from "@/components/navigation/TopAppBar";
+import { BottomNavBar } from "@/components/navigation/BottomNavBar";
+import { QuickAuditModal } from "@/components/audit/QuickAuditModal";
+import { MOCK_RESTAURANTS } from "@/data/mockData";
+import { Restaurant, BiosecurityLevel } from "@/types";
+
+export default function ExplorePage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const [auditTarget, setAuditTarget] = useState<Restaurant | null>(null);
+
+  // Filtrado reactivo
+  const filteredRestaurants = MOCK_RESTAURANTS.filter((r) => {
+    const matchesSearch =
+      r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.cuisine.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      r.location.toLowerCase().includes(searchQuery.toLowerCase());
+
+    if (selectedFilter === "all") return matchesSearch;
+    return matchesSearch && r.level === selectedFilter;
+  });
+
+  const levelBadges: Record<BiosecurityLevel, { label: string; style: string }> = {
+    organico: {
+      label: "Orgánico",
+      style: "bg-amber-950/60 text-amber-300 border-amber-600/40",
+    },
+    filtrado: {
+      label: "Filtrado",
+      style: "bg-orange-950/60 text-orange-300 border-orange-500/40",
+    },
+    antiseptico: {
+      label: "Antiséptico",
+      style: "bg-teal-950/60 text-teal-300 border-teal-500/40",
+    },
+    esterilizado: {
+      label: "Esterilizado",
+      style: "bg-purple-950/60 text-purple-300 border-purple-400/40",
+    },
+    aseptico: {
+      label: "Aséptico Platinum",
+      style: "bg-secondary-container/60 text-primary border-primary/40",
+    },
+  };
+
+  return (
+    <>
+      <TopAppBar
+        title="Directorio Sanitario"
+        subtitle="Exploración Bio-Auditada"
+      />
+
+      <main className="flex-1 flex flex-col px-space-md pt-3 pb-24 gap-4">
+        {/* Search Input Bar */}
+        <div className="relative flex items-center">
+          <span
+            className="material-symbols-outlined text-outline absolute left-3.5 text-[20px]"
+            data-icon="search"
+          >
+            search
+          </span>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Buscar por nombre, cocina o barrio..."
+            className="w-full bg-surface-container-low/90 border border-outline-variant/40 rounded-full pl-11 pr-4 py-2.5 text-body-sm text-[13px] text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container/20 transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 text-outline hover:text-on-surface"
+            >
+              <span className="material-symbols-outlined text-[16px]" data-icon="close">
+                close
+              </span>
+            </button>
+          )}
+        </div>
+
+        {/* Filter Pills Carousel */}
+        <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1">
+          <button
+            onClick={() => setSelectedFilter("all")}
+            className={`shrink-0 px-3 py-1 rounded-full text-label-md text-[12px] font-medium border transition-all ${
+              selectedFilter === "all"
+                ? "bg-primary-container text-on-primary-container border-primary/40 shadow-sm"
+                : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
+            }`}
+          >
+            Todos ({MOCK_RESTAURANTS.length})
+          </button>
+          <button
+            onClick={() => setSelectedFilter("aseptico")}
+            className={`shrink-0 px-3 py-1 rounded-full text-label-md text-[12px] font-medium border transition-all ${
+              selectedFilter === "aseptico"
+                ? "bg-primary-container text-on-primary-container border-primary/40 shadow-sm"
+                : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
+            }`}
+          >
+            💎 Aséptico
+          </button>
+          <button
+            onClick={() => setSelectedFilter("esterilizado")}
+            className={`shrink-0 px-3 py-1 rounded-full text-label-md text-[12px] font-medium border transition-all ${
+              selectedFilter === "esterilizado"
+                ? "bg-primary-container text-on-primary-container border-primary/40 shadow-sm"
+                : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
+            }`}
+          >
+            ⚡ Esterilizado
+          </button>
+          <button
+            onClick={() => setSelectedFilter("organico")}
+            className={`shrink-0 px-3 py-1 rounded-full text-label-md text-[12px] font-medium border transition-all ${
+              selectedFilter === "organico"
+                ? "bg-primary-container text-on-primary-container border-primary/40 shadow-sm"
+                : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
+            }`}
+          >
+            🌿 Orgánico
+          </button>
+        </div>
+
+        {/* Results Counter */}
+        <div className="flex items-center justify-between text-outline text-[11px] font-label-caps tracking-wider px-1">
+          <span>{filteredRestaurants.length} RESTAURANTES BIO-AUDITADOS</span>
+          <span>ORDENADO POR GRADO</span>
+        </div>
+
+        {/* Restaurant Cards List */}
+        <div className="flex flex-col gap-3">
+          {filteredRestaurants.map((restaurant) => {
+            const badge = levelBadges[restaurant.level];
+
+            return (
+              <div
+                key={restaurant.id}
+                className="glass-card rounded-2xl p-3.5 border border-outline-variant/30 flex flex-col gap-2.5 transition-all hover:border-primary/40"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-outline-variant/30">
+                      <Image
+                        src={restaurant.heroImage}
+                        alt={restaurant.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+
+                    <div>
+                      <h2 className="font-headline-sm text-[17px] text-on-surface leading-tight">
+                        {restaurant.name}
+                      </h2>
+                      <p className="font-body-sm text-[12px] text-on-surface-variant mt-0.5">
+                        {restaurant.cuisine} • {restaurant.location.split(",")[0]}
+                      </p>
+                      <div className="flex items-center gap-1.5 mt-1.5">
+                        <span
+                          className={`font-label-caps text-[9px] px-2 py-0.5 rounded-full border ${badge.style}`}
+                        >
+                          {badge.label}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Concentric Score Chip */}
+                  <div className="shrink-0 flex flex-col items-end">
+                    <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container/60 border border-primary/40 shadow-sm">
+                      <span
+                        className="material-symbols-outlined text-primary text-[15px]"
+                        data-icon="verified_user"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                      >
+                        verified_user
+                      </span>
+                      <span className="font-metric-display text-[16px] text-on-surface font-semibold leading-none">
+                        {restaurant.grade}
+                      </span>
+                    </div>
+                    <span className="font-label-caps text-[8px] text-outline mt-1 tracking-wider">
+                      SCORE / 100
+                    </span>
+                  </div>
+                </div>
+
+                {/* Micro indicators bar */}
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-outline-variant/20 text-center">
+                  <div className="bg-surface-container-low/60 p-1.5 rounded-lg">
+                    <span className="font-label-caps text-[8.5px] text-outline block">
+                      SUP. PURITY
+                    </span>
+                    <span className="font-metric-sm text-[12px] text-on-surface font-medium">
+                      {restaurant.metrics.surfacePurity}%
+                    </span>
+                  </div>
+                  <div className="bg-surface-container-low/60 p-1.5 rounded-lg">
+                    <span className="font-label-caps text-[8.5px] text-outline block">
+                      CADENA FRÍO
+                    </span>
+                    <span className="font-metric-sm text-[12px] text-on-surface font-medium truncate">
+                      {restaurant.metrics.coldChain.split(" ")[0]}
+                    </span>
+                  </div>
+                  <div className="bg-surface-container-low/60 p-1.5 rounded-lg">
+                    <span className="font-label-caps text-[8.5px] text-outline block">
+                      INFRACCIONES
+                    </span>
+                    <span className="font-metric-sm text-[12px] text-primary font-medium">
+                      {restaurant.metrics.infractions}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center gap-2 pt-1">
+                  <Link
+                    href={`/restaurant/${restaurant.id}`}
+                    className="flex-1 py-2 px-3 rounded-full bg-surface-container-high/80 border border-outline-variant/40 hover:border-primary/50 text-on-surface text-[12px] font-label-md text-center transition-colors active:scale-95"
+                  >
+                    Ver Dossier
+                  </Link>
+                  <button
+                    onClick={() => setAuditTarget(restaurant)}
+                    className="py-2 px-3 rounded-full bg-primary-container text-on-primary-container text-[12px] font-label-md font-semibold flex items-center justify-center gap-1 active:scale-95 transition-all"
+                  >
+                    <span className="material-symbols-outlined text-[15px]" data-icon="add">
+                      add
+                    </span>
+                    <span>Auditar</span>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </main>
+
+      <BottomNavBar
+        onOpenAudit={() => setAuditTarget(MOCK_RESTAURANTS[0])}
+      />
+
+      <QuickAuditModal
+        isOpen={!!auditTarget}
+        onClose={() => setAuditTarget(null)}
+        restaurantName={auditTarget?.name}
+        restaurantLocation={auditTarget?.location}
+      />
+    </>
+  );
+}

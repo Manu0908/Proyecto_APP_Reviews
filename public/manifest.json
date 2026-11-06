@@ -1,0 +1,16 @@
+{
+  "name": "Hygiene Index",
+  "short_name": "HygieneIndex",
+  "description": "Auditoría de bioseguridad y transparencia higiénica para restaurantes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09151c",
+  "theme_color": "#09151c",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
