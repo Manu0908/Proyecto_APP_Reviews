@@ -35,19 +35,31 @@ Para evitar que aspectos cosméticos encubran riesgos biológicos reales, la eva
 
 ---
 
-## 4. Sistema de Distintivos Profesionales (Ranking de Salubridad)
+## 4. Escala de Bioseguridad (Ranking de Salubridad de 5 Niveles)
 
-El puntaje global normalizado (0 a 100 puntos) categoriza al establecimiento en los siguientes grados oficiales:
+El establecimiento es categorizado según una narrativa visual y conceptual basada en pureza e higiene ambiental, huyendo del sistema genérico de estrellas:
 
-- 💎 **Grado Diamante — "Inmaculado" (95 - 100 pts):** Cero incidencias críticas, auditorías con ticket verificado consistentes y máxima transparencia.
-- 🥇 **Sello Oro — "Cocina Segura" (80 - 94 pts):** Cumplimiento sanitario sobresaliente con detalles menores subsanables.
-- 🥈 **Sello Plata — "Aceptable" (65 - 79 pts):** Higiene suficiente de funcionamiento con observaciones de mantenimiento.
-- ⚠️ **Franja Amarilla — "En Observación" (40 - 64 pts):** Deficiencias detectadas en higiene de baños o manipulación de alimentos.
-- 🛑 **Alerta Roja — "Riesgo Sanitario" (< 40 pts o Veto Activo):** Evidencias fundadas de plagas o insalubridad crítica.
+| Nivel | Denominación | Metáfora Visual y Estética UI | Significado Operativo |
+| :---: | :--- | :--- | :--- |
+| **N1** | 🌿 **Elemental (u Orgánico)** | Texturas terrosas, musgo, tonos olivas/marrones, hojas silvestres. | Estado natural expuesto al entorno diario; carencia de protocolos preventivos o presencia de incidencias sanitarias. |
+| **N2** | ⏳ **Filtrado** | Tonalidad ámbar/cobriza, efecto colador/tamiz. | Primer nivel de barrera higiénica; impurezas visibles retiradas, pero con debilidades en áreas críticas (baños o almacenamiento). |
+| **N3** | 🛡️ **Antiséptico** | Azul clínico pulcro, verde menta esteril, escudo protector. | Estado seguro y protegido; estándares básicos e indispensables de salubridad garantizados (agua, jabón, orden). |
+| **N4** | ⚡ **Esterilizado** | Violeta germicida, estética de radiación UV y acero inoxidable quirúrgico. | Cuidado meticuloso y protocolos constantes; personal con equipo de protección y cocina transparente impecable. |
+| **N5** | 💎 **Aséptico / Inmune** | Blanco cian hiperbrillante, efecto cristal templado y halo de sala blanca (*cleanroom*). | Nivel definitivo de pureza de grado quirúrgico; cero contaminación cruzada, trazabilidad perfecta y auditorías impecables. |
 
 ---
 
-## 5. Experiencia de Calificación Móvil (Bandeja Táctil Tappable)
+## 5. Mecánicas Diferenciales e Innovación de Producto
+
+1. **Modo Luz Negra (Filtro UV en Mapa):** Switch interactivo que invierte la paleta del mapa a visión nocturna fluorescente, destacando los establecimientos según la intensidad de su sello de pureza.
+2. **Decaimiento Temporal de Reputación (Decay Rate):** Las auditorías pierden peso algorítmico progresivamente cada 60 días. Un local debe mantener actividad de higiene constante para evitar que su sello pierda brillo y pase a estado "Requiere re-inspección".
+3. **Buzón de Incidencias Operativas (Aviso Privado B2B):** Permite al usuario alertar privadamente al negocio sobre faltantes menores (ej. dispensador de toallas vacío) concediendo 24 horas de gracia para subsanarlo antes de una reseña pública.
+4. **Verificación OCR de Visita:** Extracción en cliente de la fecha y nombre en el ticket de compra para otorgar la insignia "Auditoría Verificada" de forma instantánea.
+5. **Distintivo Físico de Escaparate:** Exportación de calcomanía en alta resolución con código QR dinámico para los restaurantes con Grado Esterilizado o Aséptico.
+
+---
+
+## 6. Experiencia de Calificación Móvil (Bandeja Táctil Tappable)
 
 Para minimizar la fricción en celulares, la evaluación se realiza mediante un componente de **Bandeja Deslizante (*Bottom Sheet*)**:
 
@@ -63,7 +75,7 @@ Para minimizar la fricción en celulares, la evaluación se realiza mediante un 
 
 ---
 
-## 6. Requisitos Funcionales por Módulos (Cascarón / Tabs del MVP)
+## 7. Requisitos Funcionales por Módulos (Cascarón / Tabs del MVP)
 
 ### Tab 1: Explorador en Mapa (`/map`)
 - Vista de mapa en pantalla completa (MapLibre GL + OpenStreetMap).
@@ -100,7 +112,7 @@ Para minimizar la fricción en celulares, la evaluación se realiza mediante un 
 
 ---
 
-## 7. Prevención de Difamación y Reglas de Moderación
+## 8. Prevención de Difamación y Reglas de Moderación
 1. **Fase Inicial (Lanzamiento MVP):**
    - Publicación ágil para generar tracción comunitaria.
    - Botón visible "Reportar reseña" en cada opinión (motivos: difamación, falsedad comercial, spam, lenguaje ofensivo).
@@ -111,7 +123,7 @@ Para minimizar la fricción en celulares, la evaluación se realiza mediante un 
 
 ---
 
-## 8. Casos Límite y Consideraciones Técnicas
+## 9. Casos Límite y Consideraciones Técnicas
 - **Offline / Conexión lenta en móvil:** Caché de mapa y de fichas de restaurantes visitados recientemente.
 - **Tamaño de imágenes móviles:** Compresión obligatoria en el navegador antes de subir al bucket de Supabase (máx. 1200px de ancho, WebP, < 300KB) para ahorrar ancho de banda y cuota de almacenamiento.
 - **Geocodificación inversa:** Permitir seleccionar el punto en el mapa arrastrando un pin si la dirección textual no se encuentra en OpenStreetMap.
