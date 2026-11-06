@@ -27,7 +27,7 @@ La calificación final no es un promedio simple. Se divide en 4 niveles de sever
 ### 2.2. Escala de Ranking (Visible en Ficha del Restaurante)
 Para evitar saturación visual, estos nombres y grados solo se muestran dentro de la sección de ranking del restaurante:
 
-- **Nivel 1 — Elemental (u Orgánico):** Expuesto al entorno diario, sin medidas preventivas o con fallas críticas (estética de tierra y elementos silvestres).
+- **Nivel 1 — Orgánico:** Expuesto al entorno diario, sin medidas preventivas o con fallas críticas (estética de tierra y elementos silvestres).
 - **Nivel 2 — Filtrado:** Primer nivel de control; impurezas gruesas eliminadas, pero persisten fallas menores (estética ámbar).
 - **Nivel 3 — Antiséptico:** Cumplimiento básico regular, agua, jabón y área protegida (estética azul/verde clínico).
 - **Nivel 4 — Esterilizado:** Cuidado constante, protocolos estrictos de cocina y personal protegido (estética violeta / luz UV).
@@ -60,7 +60,21 @@ Para evitar saturación visual, estos nombres y grados solo se muestran dentro d
 
 ---
 
-## 5. Funciones Adicionales Planificadas
+## 5. Sistema de Reputación de Inspectores
+
+Los usuarios progresan en rangos comunitarios según la precisión y respaldo documental de sus auditorías:
+
+- **Rangos:** Comensal Observador (R1) → Inspector de Zona (R2) → Auditor Verificado (R3) → Comisionado Sanitario (R4).
+- **Métricas de Ascenso:**
+  - Auditoría estándar con chips táctiles: +10 XP.
+  - Auditoría con comprobante de consumo (ticket verificado): +50 XP.
+  - Validaciones de la comunidad ("Diagnóstico Coincidente"): +5 XP.
+- **Ponderación:** A mayor rango del inspector, mayor es el factor de confianza y peso relativo de su voto en el índice del restaurante.
+- **Penalizaciones:** Acusaciones graves sin evidencia que resulten desmentidas conllevan deducción de XP y suspensión temporal.
+
+---
+
+## 6. Funciones Adicionales Planificadas
 
 - **Modo UV en Mapa:** Opción de contraste nocturno que resalta visualmente los locales según su nivel de higiene.
 - **Aviso Privado B2B (24h):** Opción para notificar fallas operativas menores al dueño antes de publicar una reseña negativa abierta.
