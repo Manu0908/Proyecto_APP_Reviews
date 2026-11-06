@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>L’Écume Marine — Biosecurity &amp; Transparency Dossier</title>
+<!-- Typography: Newsreader, Space Grotesk, Geist -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Geist:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#253336",
+            "tertiary": "#bac9cd",
+            "secondary-fixed": "#cae7f2",
+            "primary": "#adccd3",
+            "on-secondary": "#19343c",
+            "surface-container-highest": "#2b363e",
+            "tertiary-fixed-dim": "#bac9cd",
+            "error-container": "#93000a",
+            "error": "#ffb4ab",
+            "on-primary": "#16353b",
+            "surface-bright": "#2f3b43",
+            "secondary-container": "#324d56",
+            "on-surface": "#d8e4ee",
+            "surface-container-low": "#111d24",
+            "secondary-fixed-dim": "#afcbd5",
+            "on-primary-fixed-variant": "#2e4b51",
+            "primary-fixed-dim": "#adccd3",
+            "primary-container": "#7b99a0",
+            "background": "#09151c",
+            "tertiary-fixed": "#d6e5e9",
+            "primary-fixed": "#c9e8f0",
+            "outline-variant": "#414849",
+            "on-secondary-fixed-variant": "#304b53",
+            "outline": "#8b9293",
+            "inverse-on-surface": "#26323a",
+            "on-secondary-fixed": "#011f27",
+            "secondary": "#afcbd5",
+            "tertiary-container": "#88969a",
+            "surface-tint": "#adccd3",
+            "on-tertiary-fixed": "#101e21",
+            "on-surface-variant": "#c1c8c9",
+            "surface-container-lowest": "#041016",
+            "surface-container": "#152128",
+            "on-error": "#690005",
+            "surface": "#09151c",
+            "on-background": "#d8e4ee",
+            "inverse-primary": "#46636a",
+            "surface-variant": "#2b363e",
+            "on-secondary-container": "#a1bdc7",
+            "on-error-container": "#ffdad6",
+            "on-primary-container": "#123137",
+            "inverse-surface": "#d8e4ee",
+            "on-primary-fixed": "#001f25",
+            "on-tertiary-fixed-variant": "#3b494c",
+            "surface-dim": "#09151c",
+            "on-tertiary-container": "#212f32",
+            "surface-container-high": "#202b33"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-mobile": "1rem",
+            "space-md": "1rem",
+            "margin": "3rem",
+            "space-xl": "2.5rem",
+            "margin-mobile": "1.25rem",
+            "space-sm": "0.5rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Geist"],
+            "body-md": ["Geist"],
+            "label-caps": ["Space Grotesk"],
+            "body-lg": ["Geist"],
+            "label-md": ["Geist"],
+            "metric-sm": ["Space Grotesk"],
+            "display-hero-mobile": ["Newsreader"],
+            "headline-lg-mobile": ["Newsreader"],
+            "display-hero": ["Newsreader"],
+            "headline-sm": ["Newsreader"],
+            "headline-lg": ["Newsreader"],
+            "metric-display": ["Space Grotesk"],
+            "headline-md": ["Newsreader"]
+          },
+          "fontSize": {
+            "body-sm": ["13px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-md": ["15px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-caps": ["11px", { "lineHeight": "14px", "letterSpacing": "0.12em", "fontWeight": "600" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "400" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "metric-sm": ["20px", { "lineHeight": "26px", "fontWeight": "500" }],
+            "display-hero-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "display-hero": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+            "headline-sm": ["22px", { "lineHeight": "30px", "fontWeight": "500" }],
+            "headline-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.015em", "fontWeight": "400" }],
+            "metric-display": ["48px", { "lineHeight": "52px", "letterSpacing": "-0.03em", "fontWeight": "500" }],
+            "headline-md": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Oceanic luminescence & subtle scanline precision */
+    .glow-aura {
+      box-shadow: 0 0 35px -8px rgba(123, 153, 160, 0.4), inset 0 1px 1px 0 rgba(215, 230, 234, 0.25);
+    }
+    .glow-ring {
+      box-shadow: 0 0 20px rgba(173, 204, 211, 0.25);
+    }
+    .glass-panel {
+      background: rgba(17, 29, 36, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: inset 0 1px 1px 0 rgba(215, 230, 234, 0.12);
+    }
+    .glass-card {
+      background: rgba(21, 33, 40, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: inset 0 1px 1px 0 rgba(215, 230, 234, 0.08);
+    }
+    .radial-mask-ocean {
+      mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-on-primary min-h-screen flex justify-center">
+<!-- Mobile Viewport Container -->
+<div class="relative w-full max-w-md min-h-screen bg-surface flex flex-col pb-32 overflow-x-hidden">
+<!-- Top Navigation Bar (Task-Focused / Dossier Detail) -->
+<header class="sticky top-0 z-40 w-full px-space-md py-space-sm bg-surface/85 backdrop-blur-xl flex items-center justify-between border-b border-outline-variant/30">
+<div class="flex items-center gap-space-sm">
+<button aria-label="Go back" class="w-9 h-9 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[20px]" data-icon="arrow_back">arrow_back</span>
+</button>
+<div>
+<span class="font-label-caps text-label-caps text-primary uppercase block tracking-wider">Sanitary Audit</span>
+<h1 class="font-headline-sm text-[17px] leading-tight text-on-surface font-medium">Transparency Dossier</h1>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button aria-label="Share Dossier" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[19px]" data-icon="share">share</span>
+</button>
+<button aria-label="Bookmark" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[19px]" data-icon="bookmark_border">bookmark_border</span>
+</button>
+</div>
+</header>
+<!-- Hero Photography with Oceanic Midnight Vignette Bleed -->
+<section class="relative w-full h-72 overflow-hidden bg-surface-container-lowest">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover object-center radial-mask-ocean brightness-75 contrast-125" data-alt="Deep atmospheric interior of an elite Michelin star seafood restaurant immersed in abyssal teal and cyan ambient illumination with pristine stainless steel oyster bars and monolithic granite textures in dark oceanic tones, moody and tranquil luxury editorial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp5apWmWbWU2Egk3fwewLSS2D9_N1_Ik_9et5BRaXvvsnyX7ayJZGw6EV3KHKvSx_FVZTO2-0aDwDdVQLhS8C6rcVO2TMcKt4FyYI1jIz8TEswfHbIkyvlpU1yWfuR-pLihSOFJiUew8sPpBM7AZCUvJx_oFYcYmCUJHRg9FNl8eG_wXjBcvbS4hxoxCo5Nk-VrywG7Fl-QaTg_6dND_HWx5xk5G09YqTIASQllww"/>
+<!-- Atmospheric Linear and Radial Overlays -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-surface/60 to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-background/80"></div>
+</div>
+<!-- Live Monitoring Floating Pill -->
+<div class="absolute top-4 left-4 z-10">
+<div class="glass-panel px-3 py-1 rounded-full flex items-center gap-2 border border-outline-variant/40">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="font-label-caps text-label-caps text-on-surface tracking-widest text-[10px]">REALTIME BIO-STREAM</span>
+</div>
+</div>
+<!-- Hero Substrate Badge & Coordinates -->
+<div class="absolute bottom-4 left-4 right-4 z-10 flex justify-between items-end">
+<div>
+<div class="flex items-center gap-1.5 mb-1 text-primary">
+<span class="material-symbols-outlined text-[15px]" data-icon="location_on">location_on</span>
+<span class="font-label-caps text-label-caps tracking-widest text-[11px] text-tertiary">51.5098° N, 0.1448° W</span>
+</div>
+<span class="font-label-caps text-label-caps text-primary uppercase text-[10px] tracking-widest bg-surface-container-low/80 px-2 py-0.5 rounded border border-outline-variant/30">Mayfair • London W1J</span>
+</div>
+<div class="flex items-center gap-1 text-primary bg-surface-container/70 backdrop-blur-md px-2.5 py-1 rounded-full border border-primary-container/30">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified">verified</span>
+<span class="font-label-caps text-label-caps text-[10px] text-on-surface">ISO-22000 CERT</span>
+</div>
+</div>
+</section>
+<!-- Main Content Container -->
+<main class="px-space-md pt-2 flex flex-col gap-6">
+<!-- Header & Gastronomic Title -->
+<section class="flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-primary tracking-widest text-[11px]">ATELIER GASTRONOMIQUE &amp; RAW BAR</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant text-[10px]">INDEX VOL. 48</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight font-normal">
+          L’Écume Marine
+        </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          Culinary purism anchored in abyssal pelagic sourcing and continuous microbiological verification. Certified sterile air filtration &amp; precision sub-surface prep laboratory.
+        </p>
+</section>
+<!-- Prominent Biosecurity Grade Hero Widget -->
+<section class="glass-panel glow-aura rounded-xl p-5 border border-outline-variant/40 relative overflow-hidden">
+<!-- Ambient radial glow behind score -->
+<div class="absolute -top-12 -right-12 w-48 h-48 bg-primary-container/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-col items-center text-center relative z-10">
+<!-- Concentric Emissive Ring Gauge -->
+<div class="relative w-36 h-36 flex items-center justify-center my-2">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 120 120">
+<!-- Background sterile track -->
+<circle cx="60" cy="60" fill="none" r="52" stroke="#152128" stroke-width="5"></circle>
+<!-- Glowing luminescent meter (99.4%) -->
+<circle class="filter drop-shadow-[0_0_6px_rgba(173,204,211,0.6)]" cx="60" cy="60" fill="none" r="52" stroke="#adccd3" stroke-dasharray="326.7" stroke-dashoffset="1.96" stroke-linecap="round" stroke-width="5"></circle>
+<!-- Inner delicate hairline ring -->
+<circle cx="60" cy="60" fill="none" r="44" stroke="#414849" stroke-dasharray="3 3" stroke-width="1"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-metric-display text-[44px] leading-none tracking-tighter text-on-surface font-semibold">99.4</span>
+<span class="font-label-caps text-label-caps text-primary tracking-widest text-[9px] mt-0.5">SCORE / 100</span>
+</div>
+</div>
+<!-- Official Grade Label -->
+<div class="inline-flex items-center gap-2 mt-1 px-3 py-1 rounded-full bg-secondary-container/40 border border-primary/30 glow-ring">
+<span class="material-symbols-outlined text-[16px] text-primary fill-icon" data-icon="shield" style="font-variation-settings: 'FILL' 1;">shield</span>
+<span class="font-label-caps text-label-caps text-on-surface tracking-wider text-[11px]">GRADE A+ • ASÉPTICO PLATINUM</span>
+</div>
+<div class="w-full my-4 border-t border-outline-variant/30"></div>
+<!-- Metadata Grid -->
+<div class="w-full grid grid-cols-2 gap-3 text-left">
+<div class="bg-surface-container-low/70 p-2.5 rounded-lg border border-outline-variant/20">
+<span class="font-label-caps text-label-caps text-tertiary block text-[10px] mb-0.5">OFFICIAL BIO-AUDIT</span>
+<span class="font-label-md text-label-md text-on-surface font-medium">June 18, 2024</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant block mt-0.5">Cycle #92-B</span>
+</div>
+<div class="bg-surface-container-low/70 p-2.5 rounded-lg border border-outline-variant/20">
+<span class="font-label-caps text-label-caps text-tertiary block text-[10px] mb-0.5">ACCREDITATION</span>
+<div class="flex items-center gap-1 text-primary">
+<span class="font-label-md text-label-md text-on-surface font-medium truncate">Imperial Sanitary</span>
+</div>
+<span class="font-body-sm text-[11px] text-primary block mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="verified_user">verified_user</span> Verified
+              </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Verified Visit Receipt Badge (Cryptographic Protocol) -->
+<section class="glass-card rounded-xl p-3.5 border border-outline-variant/30 flex items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]" data-icon="qr_code_2">qr_code_2</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-label-caps text-label-caps text-primary text-[10px] tracking-wider uppercase">Verified Guest Protocol</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+</div>
+<p class="font-label-md text-label-md text-on-surface text-[12px]">Hash: <span class="font-metric-sm text-[12px] text-tertiary">0x8F92...99B4</span></p>
+</div>
+</div>
+<button class="px-2.5 py-1.5 rounded-md bg-secondary-container/50 border border-outline-variant/40 text-on-surface hover:text-primary transition-colors flex items-center gap-1">
+<span class="font-label-caps text-label-caps text-[10px]">VALIDATE</span>
+<span class="material-symbols-outlined text-[13px]" data-icon="north_east">north_east</span>
+</button>
+</section>
+<!-- Section Title: Scientific Breakdown -->
+<div class="flex items-center justify-between pt-1">
+<div>
+<span class="font-label-caps text-label-caps text-primary tracking-widest text-[10px] uppercase">Microbiological Benchmarks</span>
+<h3 class="font-headline-sm text-[20px] text-on-surface">Criteria Breakdown</h3>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant text-[11px]">5 of 5 Passed</span>
+</div>
+<!-- Bento Grid of Hygiene Metrics -->
+<div class="flex flex-col gap-3">
+<!-- Metric 1: ATP Bioluminescence -->
+<div class="glass-panel p-4 rounded-xl border border-outline-variant/30">
+<div class="flex items-start justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[16px]" data-icon="biotechnology">chips</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface font-medium">Surface Swab Bioluminescence</h4>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Adenosine Triphosphate (ATP) Surface Assay</p>
+</div>
+</div>
+<span class="font-label-caps text-label-caps text-primary bg-primary-container/20 px-2 py-0.5 rounded text-[10px] border border-primary/30">PRISTINE</span>
+</div>
+<div class="flex items-baseline justify-between mt-3 mb-1.5">
+<div class="flex items-baseline gap-1.5">
+<span class="font-metric-display text-[26px] font-semibold text-on-surface leading-none">14</span>
+<span class="font-metric-sm text-[13px] text-tertiary">RLU</span>
+</div>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Threshold Limit: &lt; 30 RLU</span>
+</div>
+<!-- Micro-Gauge Hairline Progress -->
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 28%;"></div>
+</div>
+</div>
+<!-- Metric 2: Cold Chain & Seafood Storage -->
+<div class="glass-panel p-4 rounded-xl border border-outline-variant/30">
+<div class="flex items-start justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[16px]" data-icon="ac_unit">ac_unit</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface font-medium">Cold Chain &amp; Pelagic Vault</h4>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Sub-zero raw fish blast preservation</p>
+</div>
+</div>
+<span class="font-label-caps text-label-caps text-primary bg-primary-container/20 px-2 py-0.5 rounded text-[10px] border border-primary/30">OPTIMAL</span>
+</div>
+<div class="flex items-baseline justify-between mt-3 mb-1.5">
+<div class="flex items-baseline gap-1.5">
+<span class="font-metric-display text-[26px] font-semibold text-on-surface leading-none">1.2°</span>
+<span class="font-metric-sm text-[13px] text-tertiary">C STEADY</span>
+</div>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Tolerance: 0.5°C to 2.0°C</span>
+</div>
+<!-- Hairline Dual Range Meter -->
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden flex">
+<div class="bg-transparent" style="width: 35%;"></div>
+<div class="bg-primary h-full rounded-full" style="width: 25%;"></div>
+<div class="bg-transparent flex-1"></div>
+</div>
+</div>
+<!-- Metric 3: Air Exchange & HEPA Purity -->
+<div class="glass-panel p-4 rounded-xl border border-outline-variant/30">
+<div class="flex items-start justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[16px]" data-icon="air">air</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface font-medium">Atmospheric Air Exchange</h4>
+<p class="font-body-sm text-[11px] text-on-surface-variant">14 ACH Medical-grade HEPA H14</p>
+</div>
+</div>
+<span class="font-label-caps text-label-caps text-primary bg-primary-container/20 px-2 py-0.5 rounded text-[10px] border border-primary/30">SURGICAL</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-2 pt-1 border-t border-outline-variant/20">
+<div>
+<span class="font-label-caps text-label-caps text-[9px] text-tertiary">0.3μm FILTRATION</span>
+<p class="font-metric-sm text-[18px] text-on-surface font-semibold">99.97%</p>
+</div>
+<div>
+<span class="font-label-caps text-label-caps text-[9px] text-tertiary">AMBIENT CO2</span>
+<p class="font-metric-sm text-[18px] text-on-surface font-semibold">420 <span class="text-[12px] font-normal text-on-surface-variant">ppm</span></p>
+</div>
+</div>
+</div>
+<!-- Metric 4: Water Filtration & Ice Purity -->
+<div class="glass-panel p-4 rounded-xl border border-outline-variant/30">
+<div class="flex items-start justify-between mb-2">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[16px]" data-icon="water_drop">water_drop</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface font-medium">Aqueous &amp; Ice Purification</h4>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Quadruple Reverse Osmosis + UV-C Sterilization</p>
+</div>
+</div>
+<span class="font-label-caps text-label-caps text-primary bg-primary-container/20 px-2 py-0.5 rounded text-[10px] border border-primary/30">0.0 PPM</span>
+</div>
+<div class="flex items-center justify-between text-[12px] text-on-surface-variant mt-2 pt-1">
+<span>Micro-sediment count: <strong class="text-on-surface font-medium">None detected</strong></span>
+<span class="text-primary font-metric-sm text-[11px]">UV-C: ACTIVE</span>
+</div>
+</div>
+<!-- Metric 5: Staff Sanitation & Glove Protocol -->
+<div class="glass-panel p-4 rounded-xl border border-outline-variant/30">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[16px]" data-icon="medical_services">medical_services</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface font-medium">Brigade Sterilization Protocol</h4>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Touchless sensor scrub + nitrile cycle audit</p>
+</div>
+</div>
+<span class="font-metric-sm text-[18px] text-primary font-semibold">100%</span>
+</div>
+</div>
+</div>
+<!-- Chronological Sanitization Log & Live Sensor Feed -->
+<section class="glass-panel rounded-xl p-4 border border-outline-variant/30">
+<div class="flex items-center justify-between mb-3.5 pb-2 border-b border-outline-variant/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="schedule">schedule</span>
+<h4 class="font-headline-sm text-[18px] text-on-surface">Live Sensor Chronology</h4>
+</div>
+<span class="font-label-caps text-label-caps text-primary text-[10px]">SYNCED 12s AGO</span>
+</div>
+<!-- Timeline Items -->
+<div class="relative pl-5 space-y-4 before:content-[''] before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[1px] before:bg-outline-variant/40">
+<!-- Event 1 -->
+<div class="relative">
+<span class="absolute -left-[17px] top-1 w-2.5 h-2.5 rounded-full bg-primary border-2 border-surface"></span>
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface font-medium text-[13px]">Pre-Service Swab (Oyster Station)</span>
+<span class="font-metric-sm text-[11px] text-primary">42m ago</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Surface ATP: 11 RLU — Passed immediate release</p>
+</div>
+<!-- Event 2 -->
+<div class="relative">
+<span class="absolute -left-[17px] top-1 w-2.5 h-2.5 rounded-full bg-secondary border-2 border-surface"></span>
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface font-medium text-[13px]">HEPA H14 Auto-Purge Cycle #4</span>
+<span class="font-metric-sm text-[11px] text-tertiary">2h ago</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Air scrub complete — Differential pressure: nominal</p>
+</div>
+<!-- Event 3 -->
+<div class="relative">
+<span class="absolute -left-[17px] top-1 w-2.5 h-2.5 rounded-full bg-outline-variant border-2 border-surface"></span>
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface font-medium text-[13px]">Deep Ultrasonic Cleaning — Raw Knives</span>
+<span class="font-metric-sm text-[11px] text-on-surface-variant">4h ago</span>
+</div>
+<p class="font-body-sm text-[11px] text-on-surface-variant">80kHz cavitation bath completed at 65°C</p>
+</div>
+</div>
+</section>
+<!-- Transparency Dossier Statement -->
+<section class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 text-center">
+<span class="material-symbols-outlined text-primary text-[28px] mb-1" data-icon="verified">verified</span>
+<h4 class="font-headline-sm text-[17px] text-on-surface font-medium mb-1">Culinary Biosecurity Charter</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed text-[12px]">
+          Every supplier batch is subjected to continuous cryogenic telemetry and real-time bacteriological logging. Uncompromising transparency for absolute peace of mind.
+        </p>
+<div class="mt-3 pt-3 border-t border-outline-variant/20 flex items-center justify-center gap-4 text-tertiary">
+<span class="font-label-caps text-label-caps text-[10px]">DR. ELENA VANCE, CHIEF PATHOLOGIST</span>
+</div>
+</section>
+</main>
+<!-- Floating Action Bar (Task Action Dock) -->
+<div class="fixed bottom-0 left-0 right-0 z-50 flex justify-center p-3 pointer-events-none">
+<div class="w-full max-w-md pointer-events-auto bg-surface-container-lowest/90 backdrop-blur-xl border border-outline-variant/40 rounded-full p-1.5 shadow-2xl flex items-center gap-2">
+<!-- Secondary Button: PDF Report -->
+<button class="flex-1 py-3 px-3 rounded-full border border-outline-variant/40 bg-surface-container/60 hover:border-primary text-on-surface hover:text-primary transition-colors flex items-center justify-center gap-1.5 active:scale-95 text-[12px] font-medium">
+<span class="material-symbols-outlined text-[16px]" data-icon="picture_as_pdf">picture_as_pdf</span>
+<span class="font-label-caps text-label-caps text-[10px] tracking-wide">Audit PDF</span>
+</button>
+<!-- Primary Button: Reserve Table -->
+<button class="flex-[1.4] py-3 px-4 rounded-full bg-primary-container text-on-primary font-bold shadow-lg hover:shadow-[0_0_16px_rgba(166,192,198,0.4)] transition-all flex items-center justify-center gap-2 active:scale-95 text-[13px]">
+<span class="material-symbols-outlined text-[18px]" data-icon="restaurant">restaurant</span>
+<span class="font-label-caps text-label-caps text-[11px] tracking-wider text-on-primary">Reserve Table</span>
+</button>
+</div>
+</div>
+</div>
+</body></html>

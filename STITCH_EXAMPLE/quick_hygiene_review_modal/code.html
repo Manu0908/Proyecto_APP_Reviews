@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hygiene Index - Quick Hygiene Audit</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-fixed-dim": "#afcbd5",
+            "surface": "#09151c",
+            "surface-bright": "#2f3b43",
+            "surface-dim": "#09151c",
+            "primary-container": "#7b99a0",
+            "surface-container-highest": "#2b363e",
+            "on-error-container": "#ffdad6",
+            "surface-tint": "#adccd3",
+            "secondary-fixed": "#cae7f2",
+            "inverse-surface": "#d8e4ee",
+            "on-tertiary-container": "#212f32",
+            "on-secondary-fixed": "#011f27",
+            "on-tertiary": "#253336",
+            "on-error": "#690005",
+            "surface-container-high": "#202b33",
+            "surface-variant": "#2b363e",
+            "secondary-container": "#324d56",
+            "tertiary-fixed-dim": "#bac9cd",
+            "surface-container-lowest": "#041016",
+            "inverse-primary": "#46636a",
+            "on-surface": "#d8e4ee",
+            "primary": "#adccd3",
+            "tertiary-container": "#88969a",
+            "outline": "#8b9293",
+            "primary-fixed-dim": "#adccd3",
+            "on-surface-variant": "#c1c8c9",
+            "on-background": "#d8e4ee",
+            "on-secondary-container": "#a1bdc7",
+            "error": "#ffb4ab",
+            "on-tertiary-fixed": "#101e21",
+            "on-primary-fixed": "#001f25",
+            "background": "#09151c",
+            "outline-variant": "#414849",
+            "secondary": "#afcbd5",
+            "on-primary-fixed-variant": "#2e4b51",
+            "surface-container-low": "#111d24",
+            "surface-container": "#152128",
+            "primary-fixed": "#c9e8f0",
+            "on-primary-container": "#123137",
+            "tertiary": "#bac9cd",
+            "on-primary": "#16353b",
+            "on-secondary-fixed-variant": "#304b53",
+            "on-secondary": "#19343c",
+            "tertiary-fixed": "#d6e5e9",
+            "on-tertiary-fixed-variant": "#3b494c",
+            "inverse-on-surface": "#26323a",
+            "error-container": "#93000a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-md": "1rem",
+            "gutter": "1.5rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem",
+            "margin-mobile": "1.25rem",
+            "space-xs": "0.25rem",
+            "margin": "3rem"
+          },
+          "fontFamily": {
+            "label-md": ["Geist"],
+            "headline-lg": ["Newsreader"],
+            "body-lg": ["Geist"],
+            "metric-display": ["Space Grotesk"],
+            "display-hero-mobile": ["Newsreader"],
+            "headline-md": ["Newsreader"],
+            "headline-sm": ["Newsreader"],
+            "headline-lg-mobile": ["Newsreader"],
+            "body-md": ["Geist"],
+            "metric-sm": ["Space Grotesk"],
+            "label-caps": ["Space Grotesk"],
+            "body-sm": ["Geist"],
+            "display-hero": ["Newsreader"]
+          },
+          "fontSize": {
+            "label-md": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+            "headline-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.015em", "fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "-0.005em", "fontWeight": "400"}],
+            "metric-display": ["48px", {"lineHeight": "52px", "letterSpacing": "-0.03em", "fontWeight": "500"}],
+            "display-hero-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+            "headline-md": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+            "headline-sm": ["22px", {"lineHeight": "30px", "fontWeight": "500"}],
+            "headline-lg-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+            "body-md": ["15px", {"lineHeight": "24px", "fontWeight": "400"}],
+            "metric-sm": ["20px", {"lineHeight": "26px", "fontWeight": "500"}],
+            "label-caps": ["11px", {"lineHeight": "14px", "letterSpacing": "0.12em", "fontWeight": "600"}],
+            "body-sm": ["13px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "display-hero": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.02em", "fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 350, 'GRAD' 0, 'opsz' 24;
+      font-size: 20px;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(139, 146, 147, 0.25);
+      border-radius: 9999px;
+    }
+    .frosted-sheet {
+      box-shadow: 0 -20px 45px -10px rgba(4, 16, 22, 0.85), inset 0 1px 1px 0 rgba(215, 230, 234, 0.18);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased overflow-hidden font-body-md text-body-md select-none">
+<!-- Outer Mobile Container Simulation -->
+<div class="relative w-full h-screen max-w-md mx-auto overflow-hidden bg-surface-container-lowest flex flex-col justify-end">
+<!-- BACKGROUND: Dimmed Luxury Restaurant Ambience & Micro Map Layer -->
+<div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+<img class="w-full h-full object-cover filter brightness-[0.28] contrast-125 saturate-[0.85] scale-105" data-alt="Intimate low-lit Michelin-starred restaurant dining room in Mayfair with dark oceanic marble, deep teal accents, subdued moody lighting reflecting off polished crystalline surfaces, quiet oceanic aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBN5yWmcwVhEBnYiABGypbFSIoQE8i-jcMM4e7_x8gkkSrOjTSXgLp_jrODuEYTKWk7LAv1HO5iEff6r-fVlxlDhoFXsArlte3MgL2jpNHwSG1qHm6jYGnWvvQS0vKtGmmXkz2Ftg8o6CzTUdBSFZgB_37q4eRgA_G6JB3W6phr4rOv-xWYv-AwADh8WDYuGJTC18Z6pJ6HKFs5Fj9v1lFfhpNY7DKcDcasPlmQySw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/80 to-surface-dim/40 backdrop-blur-[6px]"></div>
+<!-- Background Stylized Card Elements (Simulating Live Underlying Map/Profile) -->
+<div class="absolute top-16 left-6 right-6 p-space-md rounded-xl bg-surface-container-low/60 border border-outline-variant/30 backdrop-blur-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center border border-outline-variant/40">
+<span class="material-symbols-outlined text-primary" data-icon="restaurant">restaurant</span>
+</div>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface tracking-tight">L’Écume Marine</p>
+<p class="font-body-sm text-body-sm text-outline">14 Berkeley Square, Mayfair</p>
+</div>
+</div>
+<div class="text-right">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-highest border border-outline-variant/40 font-label-caps text-label-caps text-primary">
+              VERIFIED
+            </span>
+</div>
+</div>
+</div>
+</div>
+<!-- SHARED COMPONENT: TopAppBar (Docked Top-0 as defined in JSON) -->
+<header class="flex justify-between items-center w-full px-space-md py-space-sm fixed top-0 left-0 z-40 max-w-md mx-auto bg-surface/80 dark:bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
+<button class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors active:scale-95 transition-transform duration-150 text-primary">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<span class="font-headline-sm text-headline-sm text-on-surface dark:text-on-surface tracking-tight font-bold">
+        Hygiene Index
+      </span>
+<button class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container-high dark:hover:bg-surface-container-high transition-colors active:scale-95 transition-transform duration-150 text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+</header>
+<!-- BACKDROP BLUR MODAL SHADOW OVERLAY -->
+<div class="absolute inset-0 bg-surface-container-lowest/60 backdrop-blur-[3px] z-10"></div>
+<!-- BOTTOM SHEET MODAL CONTAINER -->
+<div class="relative z-20 w-full bg-surface-container-low/95 border-t border-outline-variant/40 rounded-t-[28px] frosted-sheet flex flex-col max-h-[777px] transition-all duration-300">
+<!-- Top Handle Bar (Draggable Indicator) -->
+<div class="w-full pt-3 pb-2 flex justify-center items-center cursor-grab active:cursor-grabbing">
+<div class="w-12 h-1 rounded-full bg-outline-variant/70 hover:bg-outline transition-colors"></div>
+</div>
+<!-- Modal Header Section -->
+<div class="px-5 pt-1 pb-3 flex items-start justify-between border-b border-outline-variant/20">
+<div>
+<div class="flex items-center space-x-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-caps text-label-caps text-secondary tracking-widest uppercase">Clinical Inspection Mode</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-normal tracking-tight">Quick Hygiene Audit</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[15px]" data-icon="pin_drop">pin_drop</span>
+<span>L’Écume Marine • Mayfair</span>
+</p>
+</div>
+<!-- Live Composite Score Meter (Platinum Pass Radiance) -->
+<div class="flex flex-col items-end">
+<div class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-surface-container-high border border-primary/30 shadow-[0_0_12px_rgba(173,204,211,0.18)]">
+<span class="material-symbols-outlined text-primary text-[17px]" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<div class="flex items-baseline">
+<span class="font-label-caps text-label-caps text-on-surface-variant mr-1">GRADE</span>
+<span class="font-metric-sm text-metric-sm text-on-surface font-semibold" id="score-display">98.5</span>
+</div>
+</div>
+<span class="font-label-caps text-[9px] text-primary/80 mt-1 uppercase tracking-wider">Platinum Metric</span>
+</div>
+</div>
+<!-- Scrollable Inspection Accordion & Fields Area -->
+<div class="overflow-y-auto custom-scroll px-5 py-3 space-y-3.5 pb-6">
+<!-- ACCORDION ITEM 1: Bathrooms (Baños) -->
+<div class="rounded-xl border border-outline-variant/40 bg-surface-container/60 overflow-hidden backdrop-blur-md transition-all">
+<button class="w-full px-4 py-3 flex items-center justify-between hover:bg-surface-container-high/40 transition-colors text-left" onclick="toggleAccordion('acc-bathrooms', 'icon-bathrooms')" type="button">
+<div class="flex items-center space-x-3">
+<div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[17px]" data-icon="wash">wash</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface font-medium block">1. Bathrooms</span>
+<span class="font-label-caps text-[10px] text-outline block">SANITARY CODE • SECT. 04</span>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<span class="font-label-caps text-label-caps px-2 py-0.5 rounded-full bg-surface-container-highest text-primary" id="count-bathrooms">4/5 pass</span>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200" data-icon="expand_more" id="icon-bathrooms">expand_more</span>
+</div>
+</button>
+<div class="px-4 pb-3.5 pt-1 space-y-2 block" id="acc-bathrooms">
+<p class="font-body-sm text-body-sm text-outline text-[12px]">Verify touchpoints, amenities, and sanitary air handling:</p>
+<div class="flex flex-wrap gap-2 pt-1">
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Soap available</span>
+</button>
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Running hot water</span>
+</button>
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Clean surfaces</span>
+</button>
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Odorless / HEPA</span>
+</button>
+<!-- Inactive Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant border border-outline-variant/60 text-label-md font-label-md hover:border-primary-container transition-all" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px] opacity-0" data-icon="check">check</span>
+<span>Paper towels</span>
+</button>
+</div>
+</div>
+</div>
+<!-- ACCORDION ITEM 2: Staff (Personal) -->
+<div class="rounded-xl border border-outline-variant/40 bg-surface-container/60 overflow-hidden backdrop-blur-md transition-all">
+<button class="w-full px-4 py-3 flex items-center justify-between hover:bg-surface-container-high/40 transition-colors text-left" onclick="toggleAccordion('acc-staff', 'icon-staff')" type="button">
+<div class="flex items-center space-x-3">
+<div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[17px]" data-icon="groups">groups</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface font-medium block">2. Staff</span>
+<span class="font-label-caps text-[10px] text-outline block">HYGIENE COMPLIANCE • PERSONNEL</span>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<span class="font-label-caps text-label-caps px-2 py-0.5 rounded-full bg-surface-container-highest text-primary">3/4 pass</span>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200" data-icon="expand_more" id="icon-staff">expand_more</span>
+</div>
+</button>
+<div class="px-4 pb-3.5 pt-1 space-y-2 block" id="acc-staff">
+<p class="font-body-sm text-body-sm text-outline text-[12px]">Grooming standards and handling protocols:</p>
+<div class="flex flex-wrap gap-2 pt-1">
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Sanitary gloves</span>
+</button>
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Hair tied/cap</span>
+</button>
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Clean uniforms</span>
+</button>
+<!-- Inactive Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant border border-outline-variant/60 text-label-md font-label-md hover:border-primary-container transition-all" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px] opacity-0" data-icon="check">check</span>
+<span>Hygiene protocols</span>
+</button>
+</div>
+</div>
+</div>
+<!-- ACCORDION ITEM 3: Utensils (Utensilios) -->
+<div class="rounded-xl border border-outline-variant/40 bg-surface-container/60 overflow-hidden backdrop-blur-md transition-all">
+<button class="w-full px-4 py-3 flex items-center justify-between hover:bg-surface-container-high/40 transition-colors text-left" onclick="toggleAccordion('acc-utensils', 'icon-utensils')" type="button">
+<div class="flex items-center space-x-3">
+<div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[17px]" data-icon="flatware">flatware</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface font-medium block">3. Utensils</span>
+<span class="font-label-caps text-[10px] text-outline block">STERILIZATION • TABLEWARE</span>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<span class="font-label-caps text-label-caps px-2 py-0.5 rounded-full bg-surface-container-highest text-primary">4/4 pass</span>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200" data-icon="expand_more" id="icon-utensils">expand_more</span>
+</div>
+</button>
+<div class="px-4 pb-3.5 pt-1 space-y-2 block" id="acc-utensils">
+<p class="font-body-sm text-body-sm text-outline text-[12px]">Optical clarity, temperature wash, and dry protocol:</p>
+<div class="flex flex-wrap gap-2 pt-1">
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Sterilized cutlery</span>
+</button>
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Dry glassware</span>
+</button>
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Disinfected menus</span>
+</button>
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>No water spots</span>
+</button>
+</div>
+</div>
+</div>
+<!-- ACCORDION ITEM 4: Hall / Dining Room (Salón) -->
+<div class="rounded-xl border border-outline-variant/40 bg-surface-container/60 overflow-hidden backdrop-blur-md transition-all">
+<button class="w-full px-4 py-3 flex items-center justify-between hover:bg-surface-container-high/40 transition-colors text-left" onclick="toggleAccordion('acc-hall', 'icon-hall')" type="button">
+<div class="flex items-center space-x-3">
+<div class="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[17px]" data-icon="chair">chair</span>
+</div>
+<div>
+<span class="font-label-md text-label-md text-on-surface font-medium block">4. Hall / Dining Room</span>
+<span class="font-label-caps text-[10px] text-outline block">ATMOSPHERIC PURITY • FLOOR PLAN</span>
+</div>
+</div>
+<div class="flex items-center space-x-2">
+<span class="font-label-caps text-label-caps px-2 py-0.5 rounded-full bg-surface-container-highest text-primary">3/4 pass</span>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200" data-icon="expand_more" id="icon-hall">expand_more</span>
+</div>
+</button>
+<div class="px-4 pb-3.5 pt-1 space-y-2 block" id="acc-hall">
+<p class="font-body-sm text-body-sm text-outline text-[12px]">Environmental sanitization and customer physical distancing:</p>
+<div class="flex flex-wrap gap-2 pt-1">
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Sanitized tables</span>
+</button>
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Well-ventilated</span>
+</button>
+<!-- Selected Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-primary-container text-on-primary-container border border-primary/40 text-label-md font-label-md transition-all shadow-[0_0_10px_rgba(123,153,160,0.3)]" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+<span>Spaced seating</span>
+</button>
+<!-- Inactive Chip -->
+<button class="chip-item inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant border border-outline-variant/60 text-label-md font-label-md hover:border-primary-container transition-all" onclick="toggleChip(this)">
+<span class="material-symbols-outlined text-[14px] opacity-0" data-icon="check">check</span>
+<span>Clean floor</span>
+</button>
+</div>
+</div>
+</div>
+<!-- NOTES & PHOTO ATTACHMENT SECTION -->
+<div class="pt-1 space-y-2.5">
+<label class="font-label-caps text-label-caps text-outline block uppercase tracking-wider">Inspector Log &amp; Photographic Evidence</label>
+<div class="relative flex items-center">
+<input class="w-full bg-surface-container-lowest/80 border border-outline-variant/60 rounded-full px-4 py-2.5 text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all pr-24" placeholder="Add clinical notation (e.g. UV check completed)..." type="text"/>
+<button class="absolute right-1.5 px-3 py-1.5 rounded-full bg-secondary-container/80 hover:bg-secondary-container text-primary font-label-md text-label-md flex items-center space-x-1 transition-colors border border-outline-variant/40">
+<span class="material-symbols-outlined text-[16px]" data-icon="photo_camera">photo_camera</span>
+<span>Attach</span>
+</button>
+</div>
+</div>
+<!-- SUBMIT CTA BUTTON & AUDIT TIMESTAMP -->
+<div class="pt-2">
+<button class="w-full py-3.5 px-6 rounded-full bg-primary-container hover:bg-primary text-on-primary-container font-headline-sm text-[16px] font-semibold tracking-tight shadow-[0_0_20px_rgba(123,153,160,0.4)] active:scale-[0.98] transition-all flex items-center justify-center space-x-2" id="submit-btn" onclick="submitAudit()">
+<span class="material-symbols-outlined text-[19px]" data-icon="verified">verified</span>
+<span>Submit Verified Audit</span>
+</button>
+<div class="flex items-center justify-center space-x-2 mt-2">
+<span class="material-symbols-outlined text-[12px] text-outline" data-icon="lock">lock</span>
+<span class="font-label-caps text-[10px] text-outline tracking-wider">CRYPTOGRAPHIC REGISTRY HASH • REAL-TIME AUDIT</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Note: BottomNavBar is intentionally suppressed per the Destination & Focus rule as this screen is a linear task-focused modal sheet review -->
+</div>
+<!-- Inline Interaction Logic for Sheet & Micro-Chips -->
+<script>
+    function toggleAccordion(id, iconId) {
+      const content = document.getElementById(id);
+      const icon = document.getElementById(iconId);
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        content.classList.add('block');
+        icon.classList.add('rotate-180');
+      } else {
+        content.classList.add('hidden');
+        content.classList.remove('block');
+        icon.classList.remove('rotate-180');
+      }
+    }
+
+    function toggleChip(button) {
+      const icon = button.querySelector('span.material-symbols-outlined');
+      const isSelected = button.classList.contains('bg-primary-container');
+      
+      if (isSelected) {
+        // Deselect
+        button.classList.remove('bg-primary-container', 'text-on-primary-container', 'border-primary/40', 'shadow-[0_0_10px_rgba(123,153,160,0.3)]');
+        button.classList.add('bg-surface-container-high', 'text-on-surface-variant', 'border-outline-variant/60');
+        if (icon) icon.classList.add('opacity-0');
+      } else {
+        // Select
+        button.classList.remove('bg-surface-container-high', 'text-on-surface-variant', 'border-outline-variant/60');
+        button.classList.add('bg-primary-container', 'text-on-primary-container', 'border-primary/40', 'shadow-[0_0_10px_rgba(123,153,160,0.3)]');
+        if (icon) icon.classList.remove('opacity-0');
+      }
+      recalculateScore();
+    }
+
+    function recalculateScore() {
+      const totalChips = document.querySelectorAll('.chip-item').length;
+      const activeChips = document.querySelectorAll('.chip-item.bg-primary-container').length;
+      const basePercentage = ((activeChips / totalChips) * 100).toFixed(1);
+      const scoreElem = document.getElementById('score-display');
+      if (scoreElem) {
+        scoreElem.innerText = basePercentage;
+      }
+    }
+
+    function submitAudit() {
+      const btn = document.getElementById('submit-btn');
+      btn.innerHTML = `<span class="material-symbols-outlined animate-spin text-[19px]" data-icon="sync">sync</span><span>Sealing Audit...</span>`;
+      setTimeout(() => {
+        btn.classList.remove('bg-primary-container');
+        btn.classList.add('bg-surface-bright', 'text-primary');
+        btn.innerHTML = `<span class="material-symbols-outlined text-[19px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span><span>Audit Verified & Logged</span>`;
+      }, 900);
+    }
+  </script>
+</body></html>
