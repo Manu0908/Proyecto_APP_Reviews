@@ -27,6 +27,27 @@ export interface ChronologyEvent {
   type: "primary" | "secondary" | "muted";
 }
 
+export interface Review {
+  id: string;
+  authorName: string;
+  authorRank: string;
+  avatarUrl: string;
+  date: string;
+  score: number;
+  comment: string;
+  hasVerifiedReceipt: boolean;
+  criteriaRatings: {
+    bathrooms: number;
+    staff: number;
+    utensils: number;
+    hall: number;
+  };
+  ownerReply?: {
+    date: string;
+    text: string;
+  };
+}
+
 export interface QuickAuditArea {
   id: string;
   number: number;
@@ -47,6 +68,7 @@ export interface Restaurant {
   tagline: string;
   cuisine: string;
   subCuisine: string;
+  city: string;
   location: string;
   coordinatesText: string;
   lng: number;
@@ -67,6 +89,7 @@ export interface Restaurant {
   };
   detailedMetrics: HygieneMetric[];
   chronology: ChronologyEvent[];
+  reviews: Review[];
 }
 
 export interface InspectorProfile {

@@ -399,6 +399,141 @@ export default function RestaurantDetailPage() {
             </section>
           )}
 
+          {/* Sección de Reseñas de la Comunidad y Réplicas */}
+          <section className="flex flex-col gap-3 pt-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="font-label-caps text-primary tracking-widest text-[10px] uppercase">
+                  AUDITORÍAS CIUDADANAS
+                </span>
+                <h3 className="font-headline-sm text-[19px] text-on-surface">
+                  Reseñas de la Comunidad ({restaurant.reviews?.length || 0})
+                </h3>
+              </div>
+              <button
+                onClick={() => setIsAuditModalOpen(true)}
+                className="text-primary font-label-md text-[12px] flex items-center gap-1 hover:underline"
+              >
+                <span>+ Calificar</span>
+              </button>
+            </div>
+
+            {restaurant.reviews && restaurant.reviews.length > 0 ? (
+              <div className="flex flex-col gap-3">
+                {restaurant.reviews.map((rev) => (
+                  <div
+                    key={rev.id}
+                    className="glass-card rounded-2xl p-4 border border-outline-variant/30 flex flex-col gap-3"
+                  >
+                    {/* Autor Header */}
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="relative w-10 h-10 rounded-full overflow-hidden border border-outline-variant/40 shrink-0">
+                          <Image
+                            src={rev.avatarUrl}
+                            alt={rev.authorName}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-label-md text-[13px] text-on-surface font-semibold">
+                              {rev.authorName}
+                            </span>
+                            {rev.hasVerifiedReceipt && (
+                              <span
+                                className="material-symbols-outlined text-primary text-[15px]"
+                                title="Visita Verificada con Ticket"
+                                data-icon="verified"
+                                style={{ fontVariationSettings: "'FILL' 1" }}
+                              >
+                                verified
+                              </span>
+                            )}
+                          </div>
+                          <span className="font-label-caps text-[9px] text-outline block">
+                            {rev.authorRank} • {rev.date}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Puntuación */}
+                      <div className="px-2.5 py-1 rounded-full bg-secondary-container/60 border border-primary/30 flex items-center gap-1">
+                        <span className="font-metric-sm text-[13px] text-on-surface font-bold">
+                          {rev.score}
+                        </span>
+                        <span className="font-label-caps text-[8px] text-primary">/100</span>
+                      </div>
+                    </div>
+
+                    {/* Desglose de estrellas rápidas */}
+                    <div className="grid grid-cols-4 gap-1.5 bg-surface-container-lowest/80 p-2 rounded-xl text-center text-[10px] font-label-caps text-outline">
+                      <div>
+                        <span>Baños</span>
+                        <strong className="block text-primary text-[11px] font-metric-sm">
+                          {rev.criteriaRatings.bathrooms}★
+                        </strong>
+                      </div>
+                      <div>
+                        <span>Personal</span>
+                        <strong className="block text-primary text-[11px] font-metric-sm">
+                          {rev.criteriaRatings.staff}★
+                        </strong>
+                      </div>
+                      <div>
+                        <span>Vajilla</span>
+                        <strong className="block text-primary text-[11px] font-metric-sm">
+                          {rev.criteriaRatings.utensils}★
+                        </strong>
+                      </div>
+                      <div>
+                        <span>Salón</span>
+                        <strong className="block text-primary text-[11px] font-metric-sm">
+                          {rev.criteriaRatings.hall}★
+                        </strong>
+                      </div>
+                    </div>
+
+                    {/* Comentario */}
+                    <p className="font-body-sm text-[12.5px] text-on-surface-variant leading-relaxed">
+                      "{rev.comment}"
+                    </p>
+
+                    {/* Réplica Oficial del Propietario (si existe) */}
+                    {rev.ownerReply && (
+                      <div className="mt-1 p-3 rounded-xl bg-surface-container-high/80 border-l-2 border-primary border-y border-r border-outline-variant/30 flex flex-col gap-1">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5 text-primary">
+                            <span
+                              className="material-symbols-outlined text-[15px]"
+                              data-icon="storefront"
+                            >
+                              storefront
+                            </span>
+                            <span className="font-label-caps text-[9.5px] uppercase font-bold tracking-wider">
+                              Respuesta Oficial del Negocio
+                            </span>
+                          </div>
+                          <span className="font-label-caps text-[9px] text-outline">
+                            {rev.ownerReply.date}
+                          </span>
+                        </div>
+                        <p className="font-body-sm text-[11.5px] text-on-surface leading-relaxed italic">
+                          {rev.ownerReply.text}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-4 rounded-xl bg-surface-container-low/60 border border-outline-variant/30 text-center text-outline text-[12px]">
+                Aún no hay reseñas registradas para este restaurante. Sé el primer inspector en auditarlo.
+              </div>
+            )}
+          </section>
+
           {/* Protección contra Difamación & Reclamación */}
           <section className="p-4 rounded-xl bg-surface-container-low border border-outline-variant/30 text-center flex flex-col gap-2">
             <h4 className="font-headline-sm text-[16px] text-on-surface font-medium">

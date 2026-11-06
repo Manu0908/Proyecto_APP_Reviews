@@ -27,6 +27,7 @@ export default function MapPage() {
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant>(
     MOCK_RESTAURANTS[0]
   );
+  const [selectedCity, setSelectedCity] = useState("Santa Marta");
   const [activeFilter, setActiveFilter] = useState("all");
   const [maxDistance, setMaxDistance] = useState(10);
   const [onlyVerifiedReceipt, setOnlyVerifiedReceipt] = useState(false);
@@ -36,15 +37,23 @@ export default function MapPage() {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isUVMode, setIsUVMode] = useState(false);
 
-  // Filtrado compuesto
+  // Filtrado compuesto con ciudad
   const displayedRestaurants = MOCK_RESTAURANTS.filter((r) => {
+    if (selectedCity !== "all" && r.city !== selectedCity) return false;
     if (activeFilter !== "all" && r.level !== activeFilter) return false;
     if (zeroInfractionsOnly && r.metrics.infractions > 0) return false;
     return true;
   });
 
+  const handleCityChange = (city: string) => {
+    setSelectedCity(city);
+    const firstInCity = MOCK_RESTAURANTS.find((r) => r.city === city) || MOCK_RESTAURANTS[0];
+    setSelectedRestaurant(firstInCity);
+  };
+
   const handleResetFilters = () => {
     setActiveFilter("all");
+    setSelectedCity("all");
     setMaxDistance(10);
     setOnlyVerifiedReceipt(false);
     setZeroInfractionsOnly(false);
@@ -62,6 +71,24 @@ export default function MapPage() {
         {/* Controles de Filtros Flotantes Superiores */}
         <div className="absolute top-3 left-0 right-0 z-20 px-space-md pointer-events-none">
           <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 pointer-events-auto">
+            {/* Selector de Ciudades Rápidas */}
+            {["Santa Marta", "Bogotá", "Medellín", "all"].map((city) => (
+              <button
+                key={city}
+                onClick={() => handleCityChange(city)}
+                className={`shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-label-md font-label-md transition-all active:scale-95 border backdrop-blur-md shadow-md ${
+                  selectedCity === city
+                    ? "bg-primary-container text-on-primary-container border-primary/50 font-bold"
+                    : "bg-surface-container-high/90 text-on-surface-variant border-outline-variant/40"
+                }`}
+              >
+                <span className="material-symbols-outlined text-[14px]" data-icon="location_on">
+                  location_on
+                </span>
+                <span>{city === "all" ? "Toda Colombia" : city}</span>
+              </button>
+            ))}
+
             {/* Toggle Modo UV */}
             <button
               onClick={() => setIsUVMode(!isUVMode)}
@@ -75,49 +102,6 @@ export default function MapPage() {
                 flare
               </span>
               <span>Modo UV {isUVMode ? "Activo" : "Off"}</span>
-            </button>
-
-            {/* Chip Aséptico */}
-            <button
-              onClick={() =>
-                setActiveFilter(activeFilter === "aseptico" ? "all" : "aseptico")
-              }
-              className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-label-md font-label-md transition-all active:scale-95 border backdrop-blur-md shadow-md ${
-                activeFilter === "aseptico"
-                  ? "bg-primary-container text-on-primary-container border-primary/50 shadow-sm"
-                  : "bg-surface-container-high/90 text-on-surface-variant border-outline-variant/40 hover:border-primary/50"
-              }`}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-tertiary-fixed" />
-              <span>💎 Aséptico ({MOCK_RESTAURANTS.filter((r) => r.level === "aseptico").length})</span>
-            </button>
-
-            {/* Chip Esterilizado */}
-            <button
-              onClick={() =>
-                setActiveFilter(activeFilter === "esterilizado" ? "all" : "esterilizado")
-              }
-              className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-label-md font-label-md transition-all active:scale-95 border backdrop-blur-md shadow-md ${
-                activeFilter === "esterilizado"
-                  ? "bg-primary-container text-on-primary-container border-primary/50"
-                  : "bg-surface-container-high/90 text-on-surface-variant border-outline-variant/40 hover:border-primary/50"
-              }`}
-            >
-              <span>⚡ Esterilizado</span>
-            </button>
-
-            {/* Chip Orgánico */}
-            <button
-              onClick={() =>
-                setActiveFilter(activeFilter === "organico" ? "all" : "organico")
-              }
-              className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-label-md font-label-md transition-all active:scale-95 border backdrop-blur-md shadow-md ${
-                activeFilter === "organico"
-                  ? "bg-primary-container text-on-primary-container border-primary/50"
-                  : "bg-surface-container-high/90 text-on-surface-variant border-outline-variant/40 hover:border-primary/50"
-              }`}
-            >
-              <span>🌿 Orgánico</span>
             </button>
           </div>
         </div>
