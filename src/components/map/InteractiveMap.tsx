@@ -91,8 +91,13 @@ export function InteractiveMap({
   const selectedLng = selectedRestaurant?.lng ?? null;
   const selectedLat = selectedRestaurant?.lat ?? null;
 
-  // Centro inicial capturado una sola vez: cambios posteriores de la lista no reinician el mapa
-  const initialCenterRef = useRef<Restaurant | null>(restaurants[0] ?? null);
+  // Centro inicial capturado una sola vez (priorizando la ciudad de referencia Santa Marta):
+  // cambios posteriores de la lista no reinician el mapa.
+  const initialCenterRef = useRef<Restaurant | null>(
+    restaurants.find((r) => r.city.toLowerCase().includes("santa marta")) ??
+      restaurants[0] ??
+      null
+  );
 
   // Inicialización única del mapa
   useEffect(() => {
@@ -178,6 +183,11 @@ export function InteractiveMap({
       onLoadRef.current?.();
     });
 
+    map.on("error", () => {
+      // Evita que el MapSkeleton bloquee indefinidamente los pines si falla una tesela remota
+      onLoadRef.current?.();
+    });
+
     map.on("click", (e) => {
       // Defensa adicional: ignorar clics originados dentro de un marcador
       const target = e.originalEvent.target;
@@ -260,6 +270,29 @@ export function InteractiveMap({
       markersRef.current.push(marker);
     });
   }, [restaurants, selectedId]);
+
+  // Si una búsqueda o filtro deja resultados activos pero ninguno es visible en el
+  // área actual del mapa (ej. buscar "Bogotá", "Medellín" o "Taganga"), desplazar la
+  // cámara al primer resultado para evitar mostrar un mapa vacío.
+  useEffect(() => {
+    const map = mapInstance.current;
+    if (!map || restaurants.length === 0) return;
+
+    const bounds = map.getBounds();
+    const hasVisiblePin = restaurants.some((r) =>
+      bounds.contains([r.lng, r.lat])
+    );
+
+    if (!hasVisiblePin) {
+      const target = restaurants[0];
+      map.easeTo({
+        center: [target.lng, target.lat],
+        zoom: 13.5,
+        duration: 650,
+        essential: true,
+      });
+    }
+  }, [restaurants]);
 
   // Centrar en el restaurante seleccionado, dejando libre el espacio de la bandeja
   useEffect(() => {
