@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fuente única de verdad para la altura de la barra de navegación inferior.
+   La usan BottomNavBar (altura) y la página del mapa (espacio reservado). */
+:root {
+  --bottom-nav-h: calc(64px + env(safe-area-inset-bottom, 0px));
+}
+
 @layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
     display: none;

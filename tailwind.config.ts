@@ -113,6 +113,29 @@ const config: Config = {
         gutter: "1.5rem",
         "gutter-mobile": "1rem",
       },
+      keyframes: {
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
+        // Rebote vertical breve usado por la pista de arrastre de la bandeja
+        "sheet-nudge": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "30%": { transform: "translateY(-14px)" },
+          "60%": { transform: "translateY(0)" },
+          "80%": { transform: "translateY(-6px)" },
+        },
+        // Barrido de luz para skeletons de carga
+        shimmer: {
+          from: { transform: "translateX(-100%)" },
+          to: { transform: "translateX(100%)" },
+        },
+      },
+      animation: {
+        "fade-in": "fade-in 200ms ease-out both",
+        "sheet-nudge": "sheet-nudge 1.1s ease-in-out 2",
+        shimmer: "shimmer 1.4s ease-in-out infinite",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],

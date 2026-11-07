@@ -18,7 +18,7 @@ export function BottomNavBar({}: BottomNavBarProps = {}) {
   return (
     <nav
       aria-label="Navegación principal"
-      className="bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 shadow-2xl fixed bottom-0 left-0 w-full z-40 flex justify-around items-center px-2 pt-2 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] max-w-md mx-auto right-0"
+      className="bg-surface-container-lowest/95 backdrop-blur-xl border-t border-outline-variant/30 shadow-2xl fixed bottom-0 left-0 w-full h-[var(--bottom-nav-h)] z-40 flex justify-around items-center px-2 pt-2 pb-[calc(env(safe-area-inset-bottom,0px)+8px)] max-w-md mx-auto right-0"
     >
       {/* Tab 1: Mapa */}
       <Link
