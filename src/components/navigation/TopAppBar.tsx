@@ -74,7 +74,7 @@ export function TopAppBar({
         // Encabezado estándar para vistas secundarias
         <>
           <div className="flex items-center gap-space-sm">
-            {showBack ? (
+            {showBack && (
               <button
                 type="button"
                 onClick={() => router.back()}
@@ -88,16 +88,6 @@ export function TopAppBar({
                   arrow_back
                 </span>
               </button>
-            ) : (
-              <Link
-                href="/explore"
-                aria-label="Buscar restaurantes y locales"
-                className="w-9 h-9 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150"
-              >
-                <span className="material-symbols-outlined text-[20px]" data-icon="search">
-                  search
-                </span>
-              </Link>
             )}
 
             <div>

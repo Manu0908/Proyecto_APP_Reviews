@@ -12,6 +12,7 @@ import {
   SHEET_FULL_HEIGHT,
   SHEET_PEEK_HEIGHT,
 } from "@/components/map/RestaurantSheet";
+import { useOneTimeHint } from "@/hooks/useOneTimeHint";
 import { MOCK_RESTAURANTS } from "@/data/mockData";
 import { Restaurant } from "@/types";
 
@@ -63,6 +64,9 @@ export default function MapPage() {
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
+  // Minitutorial inicial: indica al usuario que toque un restaurante en el mapa
+  const [selectHintPending, dismissSelectHint] = useOneTimeHint("hint:select-restaurant:v1");
+
   // Filtrado por búsqueda y filtros; memoizado para no recrear los marcadores en cada render
   const displayedRestaurants = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -90,12 +94,13 @@ export default function MapPage() {
   }, [displayedRestaurants, selectedRestaurant]);
 
   const handleSelectRestaurant = useCallback((restaurant: Restaurant) => {
+    dismissSelectHint();
     // Si la bandeja estaba cerrada, abre en nivel 1; si estaba abierta, conserva el nivel actual
     setSelectedRestaurant((prev) => {
       if (prev === null) setSheetLevel("peek");
       return restaurant;
     });
-  }, []);
+  }, [dismissSelectHint]);
 
   const handleCloseSheet = useCallback(() => {
     setSelectedRestaurant(null);
@@ -142,6 +147,16 @@ export default function MapPage() {
         />
 
         {!isMapLoaded && <MapSkeleton />}
+
+        {/* Minitutorial inicial al entrar a la app cuando no hay restaurante seleccionado */}
+        {selectHintPending && selectedRestaurant === null && isMapLoaded && (
+          <div className="absolute top-3 inset-x-0 z-20 flex justify-center pointer-events-none animate-fade-in">
+            <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-high/95 border border-primary/40 text-on-surface text-[12px] font-medium shadow-xl backdrop-blur-md">
+              <span className="material-symbols-outlined text-[16px] text-primary">touch_app</span>
+              <span>Toca cualquier restaurante en el mapa para explorar</span>
+            </div>
+          </div>
+        )}
 
         {displayedRestaurants.length === 0 && (
           <div className="absolute top-3 inset-x-0 z-20 flex justify-center pointer-events-none animate-fade-in">

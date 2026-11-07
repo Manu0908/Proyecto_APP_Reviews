@@ -21,7 +21,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
     accreditation: "Auditoría Comunitaria del Magdalena",
     verifiedProtocolHash: "0x7F21...88A1",
     description:
-      "[DATOS SINTÉTICOS DE PRUEBA] Famoso punto de comidas rápidas nocturnas en Gaira. Destaca por el uso de guantes desechables al armar los panes y plancha desengrasada con frecuencia. Área de salsas con dispensadores refrigerados.",
+      "Famoso punto de comidas rápidas nocturnas en Gaira. Destaca por el uso de guantes desechables al armar los panes y plancha desengrasada con frecuencia. Área de salsas con dispensadores refrigerados.",
     heroImage:
       "https://images.unsplash.com/photo-1561758033-d89a9ad46330?q=80&w=1200&auto=format&fit=crop",
     metrics: {
@@ -108,38 +108,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
         type: "secondary",
       },
     ],
-    reviews: [
-      {
-        id: "rev-g1",
-        authorName: "Carlos Mario Peña",
-        authorRank: "Inspector de Zona (R2)",
-        avatarUrl:
-          "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop",
-        date: "2 de Noviembre, 2026",
-        score: 82,
-        comment:
-          "Muy buen manejo de la plancha a pesar de la alta demanda en Gaira. El muchacho que cobra está en una cabina aparte y los que arman las hamburguesas usan cofias y guantes nuevos. La salsa tártara estaba fría y fresca.",
-        hasVerifiedReceipt: true,
-        criteriaRatings: { bathrooms: 3.5, staff: 4.8, utensils: 4.2, hall: 3.8 },
-        ownerReply: {
-          date: "3 de Noviembre, 2026",
-          text: "¡Gracias Carlos! En Los Maracuchos nos tomamos muy en serio la limpieza para que la gente de Gaira y turistas coman con total tranquilidad. Ya reforzamos el dispensador de toallas.",
-        },
-      },
-      {
-        id: "rev-g2",
-        authorName: "Valentina Restrepo",
-        authorRank: "Comensal Observadora (R1)",
-        avatarUrl:
-          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop",
-        date: "28 de Octubre, 2026",
-        score: 71,
-        comment:
-          "La comida es deliciosa y las mesas las limpian apenas se levanta la gente. El único detalle es que a las 11 PM se había acabado el jabón líquido del lavamanos.",
-        hasVerifiedReceipt: false,
-        criteriaRatings: { bathrooms: 2.8, staff: 4.5, utensils: 4.0, hall: 3.5 },
-      },
-    ],
+    reviews: [],
   },
 
   // 2. Santa Marta - El Rodadero (Donde Chucho Gourmet)
@@ -162,7 +131,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
     accreditation: "Asociación Gastronómica del Caribe",
     verifiedProtocolHash: "0x3D11...99E2",
     description:
-      "[DATOS SINTÉTICOS DE PRUEBA] Referente gastronómico de El Rodadero. Implementa protocolo estricto de frescura en pescados del día, refrigeración bajo cero de langostinos y copas esterilizadas al vapor.",
+      "Referente gastronómico de El Rodadero. Implementa protocolo estricto de frescura en pescados del día, refrigeración bajo cero de langostinos y copas esterilizadas al vapor.",
     heroImage:
       "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=1200&auto=format&fit=crop",
     metrics: {
@@ -217,21 +186,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
         type: "primary",
       },
     ],
-    reviews: [
-      {
-        id: "rev-ch1",
-        authorName: "Dra. Cecilia Alarcón",
-        authorRank: "Auditora Verificada (R3)",
-        avatarUrl:
-          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop",
-        date: "1 de Noviembre, 2026",
-        score: 99,
-        comment:
-          "Impecable. Los baños parecen de clínica privada, agua fría y jabón antibacterial con sensor. El pargo rojo se sentía recién salido del mar y la vajilla no tenía ni una sola mancha de agua o grasa.",
-        hasVerifiedReceipt: true,
-        criteriaRatings: { bathrooms: 5.0, staff: 5.0, utensils: 5.0, hall: 4.8 },
-      },
-    ],
+    reviews: [],
   },
 
   // 3. Santa Marta - Taganga / Centro (Restaurante Bahía Taganga)
@@ -254,7 +209,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
     accreditation: "Veeduría Ambiental de Taganga",
     verifiedProtocolHash: "0x89AB...12CD",
     description:
-      "[DATOS SINTÉTICOS DE PRUEBA] Restaurante con vista directa a la bahía. Destaca por contar con planta de tratamiento de agua propia para el lavado de vajilla y vitrina de mariscos en hielo picado continuo.",
+      "Restaurante con vista directa a la bahía. Destaca por contar con planta de tratamiento de agua propia para el lavado de vajilla y vitrina de mariscos en hielo picado continuo.",
     heroImage:
       "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?q=80&w=1200&auto=format&fit=crop",
     metrics: {
@@ -309,21 +264,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
         type: "primary",
       },
     ],
-    reviews: [
-      {
-        id: "rev-tag1",
-        authorName: "Jorge Mario Díaz",
-        authorRank: "Inspector de Zona (R2)",
-        avatarUrl:
-          "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop",
-        date: "29 de Octubre, 2026",
-        score: 85,
-        comment:
-          "Excelente cazuela de mariscos y los cubiertos venían sellados en servilleta de papel. Para estar justo frente a la playa, el control de moscas y polvo es ejemplar gracias a los ventiladores de aire descendente.",
-        hasVerifiedReceipt: true,
-        criteriaRatings: { bathrooms: 4.0, staff: 4.5, utensils: 4.5, hall: 4.2 },
-      },
-    ],
+    reviews: [],
   },
 
   // 4. Cundinamarca - Chía (Andrés Carne de Res)
@@ -346,7 +287,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
     accreditation: "Bureau Veritas Colombia",
     verifiedProtocolHash: "0xBC99...4412",
     description:
-      "[DATOS SINTÉTICOS DE PRUEBA] Operación gastronómica masiva con más de 12 cocinas temáticas integradas. Certificación HACCP en cadena de corte y maduración cárnica. Limpieza robotizada de suelos y filtros de campanas de alta extracción.",
+      "Operación gastronómica masiva con más de 12 cocinas temáticas integradas. Certificación HACCP en cadena de corte y maduración cárnica. Limpieza robotizada de suelos y filtros de campanas de alta extracción.",
     heroImage:
       "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1200&auto=format&fit=crop",
     metrics: {
@@ -401,25 +342,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
         type: "primary",
       },
     ],
-    reviews: [
-      {
-        id: "rev-andres-1",
-        authorName: "Andrés Felipe Gómez",
-        authorRank: "Comisionado Sanitario (R4)",
-        avatarUrl:
-          "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=200&auto=format&fit=crop",
-        date: "3 de Noviembre, 2026",
-        score: 98,
-        comment:
-          "Auditoría rigurosa en noche de fin de semana con lleno total: la brigada de cocina cambia guantes cada media hora y los baños tienen personal de limpieza continuo. Sorprendente estándar para un local tan masivo.",
-        hasVerifiedReceipt: true,
-        criteriaRatings: { bathrooms: 4.9, staff: 5.0, utensils: 4.8, hall: 4.9 },
-        ownerReply: {
-          date: "4 de Noviembre, 2026",
-          text: "¡Agradecidos con el equipo de inspectores! La rumba y el buen corte van siempre de la mano de una cocina impecable.",
-        },
-      },
-    ],
+    reviews: [],
   },
 
   // 5. Bogotá - La Candelaria (La Puerta Falsa)
@@ -442,7 +365,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
     accreditation: "Secretaría de Salud de Bogotá",
     verifiedProtocolHash: "0x11FF...77AA",
     description:
-      "[DATOS SINTÉTICOS DE PRUEBA] El restaurante más antiguo de Colombia. A pesar de operar en una casona colonial bicentenaria, mantiene protocolos modernos de esterilización de loza y cocción a vapor controlado de tamales con hojas asépticas.",
+      "El restaurante más antiguo de Colombia. A pesar de operar en una casona colonial bicentenaria, mantiene protocolos modernos de esterilización de loza y cocción a vapor controlado de tamales con hojas asépticas.",
     heroImage:
       "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1200&auto=format&fit=crop",
     metrics: {
@@ -497,21 +420,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
         type: "primary",
       },
     ],
-    reviews: [
-      {
-        id: "rev-pf1",
-        authorName: "Mariana Silva",
-        authorRank: "Inspector de Zona (R2)",
-        avatarUrl:
-          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200&auto=format&fit=crop",
-        date: "2 de Noviembre, 2026",
-        score: 89,
-        comment:
-          "Mucho orden en la barra a pesar del espacio estrecho. Los pocillos de barro para el chocolate vienen saliendo de la máquina de vapor a alta temperatura. Todo muy pulcro.",
-        hasVerifiedReceipt: true,
-        criteriaRatings: { bathrooms: 3.8, staff: 4.7, utensils: 4.8, hall: 4.2 },
-      },
-    ],
+    reviews: [],
   },
 
   // 6. Medellín - El Poblado (Mondongo's El Poblado)
@@ -534,7 +443,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
     accreditation: "Comité Sanitario de Antioquia",
     verifiedProtocolHash: "0x88CC...2211",
     description:
-      "[DATOS SINTÉTICOS DE PRUEBA] Famoso restaurante de tradición paisa con vidriera panorámica hacia la cocina de acero quirúrgico. Procesamiento automatizado de verduras, desengrasado con vapor y brigada con mallas completas.",
+      "Famoso restaurante de tradición paisa con vidriera panorámica hacia la cocina de acero quirúrgico. Procesamiento automatizado de verduras, desengrasado con vapor y brigada con mallas completas.",
     heroImage:
       "https://images.unsplash.com/photo-1543353071-873f17a7a088?q=80&w=1200&auto=format&fit=crop",
     metrics: {
@@ -589,25 +498,7 @@ export const MOCK_RESTAURANTS: Restaurant[] = [
         type: "primary",
       },
     ],
-    reviews: [
-      {
-        id: "rev-mon1",
-        authorName: "Santiago Echeverri",
-        authorRank: "Auditor Verificado (R3)",
-        avatarUrl:
-          "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=200&auto=format&fit=crop",
-        date: "5 de Noviembre, 2026",
-        score: 99,
-        comment:
-          "Es un espectáculo ver la cocina detrás del vidrio: brillo total en ollas de acero, ni una gota de grasa en el piso y todo el personal con uniforme blanco impecable. Baños amplios con dispensador automático.",
-        hasVerifiedReceipt: true,
-        criteriaRatings: { bathrooms: 5.0, staff: 5.0, utensils: 5.0, hall: 4.9 },
-        ownerReply: {
-          date: "5 de Noviembre, 2026",
-          text: "En Mondongo's la pulcritud es parte del sazón paisa. ¡Gracias por la reseña y la verificación con ticket!",
-        },
-      },
-    ],
+    reviews: [],
   },
 ];
 

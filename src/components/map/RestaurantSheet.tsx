@@ -108,7 +108,8 @@ export function RestaurantSheet({
     drag.lastTime = e.timeStamp;
 
     let next = drag.startOffset + deltaY;
-    if (next < 0) next = next * 0.3; // resistencia elástica por encima del nivel completo
+    // Tope superior en nivel 2: la bandeja se comporta como una lengua anclada al fondo y no se despega
+    if (next < 0) next = 0;
     setDragOffset(Math.min(next, HIDDEN_OFFSET));
   };
 
@@ -151,12 +152,16 @@ export function RestaurantSheet({
 
   return (
     <div
-      className={`absolute inset-x-0 bottom-0 z-30 will-change-transform ${
+      className={`absolute inset-x-0 z-30 will-change-transform ${
         dragOffset === null
           ? "transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
           : ""
       }`}
-      style={{ height: SHEET_FULL_HEIGHT, transform: `translateY(${offset}px)` }}
+      style={{
+        height: SHEET_FULL_HEIGHT + 120,
+        bottom: -120,
+        transform: `translateY(${offset}px)`,
+      }}
       aria-hidden={!isOpen}
     >
       {/* Pista de arrastre de una sola vez, flotando sobre la bandeja */}
@@ -177,7 +182,7 @@ export function RestaurantSheet({
         onPointerUp={finishDrag}
         onPointerCancel={finishDrag}
         onClickCapture={handleClickCapture}
-        className={`h-full ocean-glass-card rounded-t-3xl border-t border-outline-variant/40 px-4 touch-none select-none flex flex-col ${
+        className={`h-full ocean-glass-card rounded-t-3xl border-t border-outline-variant/40 px-4 pb-32 touch-none select-none flex flex-col ${
           showHint ? "motion-safe:animate-sheet-nudge" : ""
         }`}
       >

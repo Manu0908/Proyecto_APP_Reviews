@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { TopAppBar } from "@/components/navigation/TopAppBar";
 import { BottomNavBar } from "@/components/navigation/BottomNavBar";
 import { MOCK_PROFILE } from "@/data/mockData";
 
@@ -13,12 +12,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      <TopAppBar
-        title="Mi Perfil"
-        subtitle="Comunidad Gastronómica"
-      />
-
-      <main className="flex-1 flex flex-col px-space-md pt-3 pb-24 gap-4">
+      <main className="flex-1 flex flex-col px-space-md pt-6 pb-24 gap-4">
         {/* Sub-Tabs: Modo Perfil vs Modo Propietario */}
         <div className="flex bg-surface-container-lowest p-1 rounded-full border border-outline-variant/30">
           <button
