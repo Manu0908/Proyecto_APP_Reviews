@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface TopAppBarProps {
   title?: string;
@@ -15,13 +16,16 @@ export function TopAppBar({
   onFilterClick,
   subtitle,
 }: TopAppBarProps) {
+  const router = useRouter();
+
   return (
     <header className="bg-surface/85 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center w-full px-space-md py-space-sm sticky top-0 left-0 z-40">
       <div className="flex items-center gap-space-sm">
         {showBack ? (
-          <Link
-            href="/"
-            aria-label="Volver al mapa"
+          <button
+            type="button"
+            onClick={() => router.back()}
+            aria-label="Volver a la vista anterior"
             className="w-9 h-9 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150"
           >
             <span
@@ -30,7 +34,7 @@ export function TopAppBar({
             >
               arrow_back
             </span>
-          </Link>
+          </button>
         ) : (
           <Link
             href="/explore"

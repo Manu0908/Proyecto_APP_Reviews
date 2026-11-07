@@ -1,5 +1,5 @@
 export type BiosecurityLevel =
-  | "organico"
+  | "alerta"
   | "filtrado"
   | "antiseptico"
   | "esterilizado"

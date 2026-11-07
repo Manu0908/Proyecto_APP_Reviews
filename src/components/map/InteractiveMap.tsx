@@ -65,13 +65,13 @@ export function InteractiveMap({
     restaurants.forEach((restaurant) => {
       const isSelected = restaurant.id === selectedRestaurant.id;
 
-      // Crear elemento HTML personalizado para el pin
+      // Crear elemento HTML personalizado para el pin con área táctil accesible (mínimo 48px)
       const el = document.createElement("div");
-      el.className = "cursor-pointer group flex flex-col items-center";
+      el.className = "cursor-pointer group flex flex-col items-center justify-center p-2 -m-2 min-w-[48px] min-h-[48px]";
 
       const badgeColor =
-        restaurant.level === "organico"
-          ? "border-amber-600/80 bg-[#1a1208] text-amber-300"
+        restaurant.level === "alerta"
+          ? "border-red-600/90 bg-[#200808] text-rose-300"
           : restaurant.level === "filtrado"
           ? "border-orange-500/80 bg-[#1f140a] text-orange-300"
           : restaurant.level === "antiseptico"
@@ -97,23 +97,16 @@ export function InteractiveMap({
         `;
       } else {
         el.innerHTML = `
-          <div class="w-7 h-7 rounded-full border ${badgeColor} flex items-center justify-center shadow-lg transition-transform hover:scale-110">
-            <span class="text-[10px] font-semibold">${Math.round(restaurant.grade)}</span>
+          <div class="w-8 h-8 rounded-full border-2 ${badgeColor} flex items-center justify-center shadow-lg transition-transform hover:scale-110">
+            <span class="text-[11px] font-bold">${Math.round(restaurant.grade)}</span>
           </div>
-          <span class="mt-1 text-[9px] font-medium text-[#c1c8c9] bg-[#041016]/90 border border-white/10 px-1.5 py-0.5 rounded-full whitespace-nowrap tracking-wide shadow-sm">${restaurant.shortName}</span>
+          <span class="mt-1 text-[9.5px] font-semibold text-[#c1c8c9] bg-[#041016]/90 border border-white/10 px-2 py-0.5 rounded-full whitespace-nowrap tracking-wide shadow-sm">${restaurant.shortName}</span>
         `;
       }
 
       el.addEventListener("click", (e) => {
         e.stopPropagation();
         onSelectRestaurant(restaurant);
-        map.flyTo({
-          center: [restaurant.lng, restaurant.lat],
-          zoom: 15,
-          speed: 1.2,
-          curve: 1.4,
-          essential: true,
-        });
       });
 
       const marker = new maplibregl.Marker({ element: el })
@@ -124,13 +117,16 @@ export function InteractiveMap({
     });
   }, [restaurants, selectedRestaurant, onSelectRestaurant]);
 
-  // Al cambiar restaurante seleccionado desde afuera (ej. filtros), centrar
+  // Al cambiar restaurante seleccionado desde afuera (ej. filtros o clic en pin), centrar con compensación de sheet inferior
   useEffect(() => {
     const map = mapInstance.current;
     if (!map) return;
     map.flyTo({
       center: [selectedRestaurant.lng, selectedRestaurant.lat],
       zoom: 15,
+      padding: { bottom: 220, top: 0, left: 0, right: 0 },
+      speed: 1.2,
+      curve: 1.4,
       essential: true,
     });
   }, [selectedRestaurant.id]);

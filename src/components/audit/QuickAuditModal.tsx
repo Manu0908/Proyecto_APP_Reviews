@@ -57,10 +57,49 @@ export function QuickAuditModal({
     }));
   };
 
-  // Cálculo reactivo del porcentaje y grado
-  const allChipIds = MOCK_AUDIT_AREAS.flatMap((a) => a.chips.map((c) => c.id));
-  const activeCount = allChipIds.filter((id) => selectedChips[id]).length;
-  const currentScore = ((activeCount / allChipIds.length) * 100).toFixed(1);
+  // Cálculo ponderado oficial (40% Baños, 35% Personal, 15% Utensilios, 10% Salón)
+  const bathroomsArea = MOCK_AUDIT_AREAS.find((a) => a.id === "bathrooms");
+  const staffArea = MOCK_AUDIT_AREAS.find((a) => a.id === "staff");
+  const utensilsArea = MOCK_AUDIT_AREAS.find((a) => a.id === "utensils");
+  const hallArea = MOCK_AUDIT_AREAS.find((a) => a.id === "hall");
+
+  const bathroomsCount = bathroomsArea?.chips.filter((c) => selectedChips[c.id]).length || 0;
+  const bathroomsTotal = bathroomsArea?.chips.length || 5;
+  const staffCount = staffArea?.chips.filter((c) => selectedChips[c.id]).length || 0;
+  const staffTotal = staffArea?.chips.length || 4;
+  const utensilsCount = utensilsArea?.chips.filter((c) => selectedChips[c.id]).length || 0;
+  const utensilsTotal = utensilsArea?.chips.length || 4;
+  const hallCount = hallArea?.chips.filter((c) => selectedChips[c.id]).length || 0;
+  const hallTotal = hallArea?.chips.length || 4;
+
+  const bathroomsRatio = bathroomsCount / bathroomsTotal;
+  const staffRatio = staffCount / staffTotal;
+  const utensilsRatio = utensilsCount / utensilsTotal;
+  const hallRatio = hallCount / hallTotal;
+
+  const rawScore =
+    bathroomsRatio * 40 +
+    staffRatio * 35 +
+    utensilsRatio * 15 +
+    hallRatio * 10;
+
+  // REGLA DE VETO: Si Baños y Salubridad < 50% (menos de 3 criterios),
+  // el local queda vetado de certificación: máximo 40 pts y Nivel 1 Alerta Sanitaria.
+  const isVetoed = bathroomsRatio < 0.5;
+  const finalScoreNum = isVetoed ? Math.min(rawScore, 40) : rawScore;
+  const currentScore = finalScoreNum.toFixed(1);
+
+  const currentLevelName = isVetoed
+    ? "⚠️ N1: Alerta Sanitaria (Veto)"
+    : finalScoreNum >= 95
+    ? "💎 N5: Aséptico Platinum"
+    : finalScoreNum >= 80
+    ? "⚡ N4: Esterilizado"
+    : finalScoreNum >= 70
+    ? "🛡️ N3: Antiséptico"
+    : finalScoreNum >= 60
+    ? "🔍 N2: Filtrado"
+    : "⚠️ N1: Alerta Sanitaria";
 
   const handleSubmit = () => {
     setIsSubmitting(true);
@@ -119,36 +158,64 @@ export function QuickAuditModal({
 
           {/* Live Composite Score Meter */}
           <div className="flex flex-col items-end">
-            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-surface-container-high border border-primary/30 shadow-[0_0_12px_rgba(173,204,211,0.18)]">
+            <div
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full border shadow-sm transition-colors ${
+                isVetoed
+                  ? "bg-red-950/60 border-red-500/60 text-rose-300"
+                  : "bg-surface-container-high border-primary/30 shadow-[0_0_12px_rgba(173,204,211,0.18)]"
+              }`}
+            >
               <span
-                className="material-symbols-outlined text-primary text-[17px]"
-                data-icon="verified_user"
+                className={`material-symbols-outlined text-[17px] ${
+                  isVetoed ? "text-rose-400" : "text-primary"
+                }`}
+                data-icon={isVetoed ? "gpp_bad" : "verified_user"}
                 style={{ fontVariationSettings: "'FILL' 1" }}
               >
-                verified_user
+                {isVetoed ? "gpp_bad" : "verified_user"}
               </span>
               <div className="flex items-baseline">
                 <span className="font-label-caps text-[9px] text-on-surface-variant mr-1">
                   GRADE
                 </span>
-                <span className="font-metric-sm text-metric-sm text-on-surface font-semibold">
+                <span
+                  className={`font-metric-sm text-metric-sm font-semibold ${
+                    isVetoed ? "text-rose-300" : "text-on-surface"
+                  }`}
+                >
                   {currentScore}
                 </span>
               </div>
             </div>
-            <span className="font-label-caps text-[9px] text-primary/80 mt-1 uppercase tracking-wider">
-              {Number(currentScore) >= 95
-                ? "Aséptico Platinum"
-                : Number(currentScore) >= 80
-                ? "Esterilizado"
-                : Number(currentScore) >= 65
-                ? "Antiséptico"
-                : Number(currentScore) >= 40
-                ? "Filtrado"
-                : "Orgánico"}
+            <span
+              className={`font-label-caps text-[9px] mt-1 uppercase tracking-wider font-medium ${
+                isVetoed ? "text-rose-400" : "text-primary/90"
+              }`}
+            >
+              {currentLevelName}
             </span>
           </div>
         </div>
+
+        {/* Banner de Regla de Veto Activa */}
+        {isVetoed && (
+          <div className="mx-5 mt-2.5 p-2.5 rounded-xl bg-red-950/70 border border-red-500/50 flex items-start gap-2.5">
+            <span
+              className="material-symbols-outlined text-rose-400 text-[18px] shrink-0 mt-0.5"
+              data-icon="warning"
+            >
+              warning
+            </span>
+            <div className="text-[11px] leading-snug">
+              <span className="font-semibold text-rose-200 block uppercase tracking-wide text-[10px]">
+                Regla de Veto Sanitario Activada
+              </span>
+              <span className="text-rose-300/90 text-[10.5px]">
+                Fallas en Baños y Salubridad (&lt; 50% de criterios). El establecimiento no puede ser certificado y su calificación máxima está limitada a Nivel 1.
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Scrollable Inspection Accordion Area */}
         <div className="overflow-y-auto custom-scrollbar px-5 py-3 space-y-3 pb-8">

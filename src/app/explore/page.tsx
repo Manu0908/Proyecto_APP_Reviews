@@ -44,9 +44,9 @@ export default function ExplorePage() {
   };
 
   const levelBadges: Record<BiosecurityLevel, { label: string; style: string }> = {
-    organico: {
-      label: "🌿 Nivel 1: Orgánico",
-      style: "bg-amber-950/60 text-amber-300 border-amber-600/40",
+    alerta: {
+      label: "⚠️ Nivel 1: Alerta Sanitaria",
+      style: "bg-red-950/60 text-rose-300 border-rose-600/40",
     },
     filtrado: {
       label: "⏳ Nivel 2: Filtrado",
@@ -135,14 +135,34 @@ export default function ExplorePage() {
             ⚡ Esterilizado
           </button>
           <button
-            onClick={() => setSelectedFilter("organico")}
+            onClick={() => setSelectedFilter("antiseptico")}
             className={`shrink-0 px-3 py-1 rounded-full text-label-md text-[12px] font-medium border transition-all ${
-              selectedFilter === "organico"
+              selectedFilter === "antiseptico"
                 ? "bg-primary-container text-on-primary-container border-primary/40 shadow-sm"
                 : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
             }`}
           >
-            🌿 Orgánico
+            🛡️ Antiséptico
+          </button>
+          <button
+            onClick={() => setSelectedFilter("filtrado")}
+            className={`shrink-0 px-3 py-1 rounded-full text-label-md text-[12px] font-medium border transition-all ${
+              selectedFilter === "filtrado"
+                ? "bg-primary-container text-on-primary-container border-primary/40 shadow-sm"
+                : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
+            }`}
+          >
+            🔍 Filtrado
+          </button>
+          <button
+            onClick={() => setSelectedFilter("alerta")}
+            className={`shrink-0 px-3 py-1 rounded-full text-label-md text-[12px] font-medium border transition-all ${
+              selectedFilter === "alerta"
+                ? "bg-primary-container text-on-primary-container border-primary/40 shadow-sm"
+                : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
+            }`}
+          >
+            ⚠️ Alerta Sanitaria
           </button>
         </div>
 

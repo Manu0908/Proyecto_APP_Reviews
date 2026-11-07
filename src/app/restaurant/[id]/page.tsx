@@ -17,6 +17,7 @@ export default function RestaurantDetailPage() {
     MOCK_RESTAURANTS.find((r) => r.id === restaurantId) || MOCK_RESTAURANTS[0];
 
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"dossier" | "reviews" | "metrics">("dossier");
   const [isValidated, setIsValidated] = useState(false);
   const [showQRModal, setShowQRModal] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -24,7 +25,7 @@ export default function RestaurantDetailPage() {
 
   // Nivel textual y colores según la escala de 5 niveles
   const levelLabels = {
-    organico: "NIVEL 1 • ORGÁNICO",
+    alerta: "NIVEL 1 • ALERTA SANITARIA",
     filtrado: "NIVEL 2 • FILTRADO",
     antiseptico: "NIVEL 3 • ANTISÉPTICO",
     esterilizado: "NIVEL 4 • ESTERILIZADO",
@@ -120,8 +121,50 @@ export default function RestaurantDetailPage() {
             </p>
           </section>
 
-          {/* Widget de Grado Concéntrico Circular */}
-          <section className="glass-panel glow-aura rounded-xl p-5 border border-outline-variant/40 relative overflow-hidden">
+          {/* Barra de Pestañas Contextuales (Elimina el scroll de 2,000px) */}
+          <div className="flex border border-outline-variant/30 bg-surface-container-low/90 backdrop-blur-md rounded-2xl p-1 gap-1 shadow-md sticky top-[56px] z-20">
+            <button
+              type="button"
+              onClick={() => setActiveTab("dossier")}
+              className={`flex-1 py-2 px-1 rounded-xl text-[12px] font-medium transition-all flex items-center justify-center gap-1.5 ${
+                activeTab === "dossier"
+                  ? "bg-primary-container text-on-primary-container font-semibold shadow-sm"
+                  : "text-outline hover:text-on-surface"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">verified_user</span>
+              <span>Bioseguridad</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("reviews")}
+              className={`flex-1 py-2 px-1 rounded-xl text-[12px] font-medium transition-all flex items-center justify-center gap-1.5 ${
+                activeTab === "reviews"
+                  ? "bg-primary-container text-on-primary-container font-semibold shadow-sm"
+                  : "text-outline hover:text-on-surface"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">reviews</span>
+              <span>Reseñas ({restaurant.reviews?.length || 0})</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("metrics")}
+              className={`flex-1 py-2 px-1 rounded-xl text-[12px] font-medium transition-all flex items-center justify-center gap-1.5 ${
+                activeTab === "metrics"
+                  ? "bg-primary-container text-on-primary-container font-semibold shadow-sm"
+                  : "text-outline hover:text-on-surface"
+              }`}
+            >
+              <span className="material-symbols-outlined text-[16px]">analytics</span>
+              <span>Métricas</span>
+            </button>
+          </div>
+
+          {activeTab === "dossier" && (
+            <div className="flex flex-col gap-4 animate-fadeIn">
+              {/* Widget de Grado Concéntrico Circular */}
+              <section className="glass-panel glow-aura rounded-xl p-5 border border-outline-variant/40 relative overflow-hidden">
             <div className="absolute -top-12 -right-12 w-48 h-48 bg-primary-container/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="flex flex-col items-center text-center relative z-10">
@@ -224,6 +267,97 @@ export default function RestaurantDetailPage() {
             </div>
           </section>
 
+          {/* Botones de Acción de Bioseguridad Inline */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <button
+              type="button"
+              onClick={() => setIsAuditModalOpen(true)}
+              className="py-3 px-3 rounded-xl bg-primary-container text-on-primary-container font-semibold shadow-md active:scale-95 transition-all flex items-center justify-center gap-1.5 text-[12.5px]"
+            >
+              <span className="material-symbols-outlined text-[17px]">assignment_turned_in</span>
+              <span>Auditar Ahora</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("reviews")}
+              className="py-3 px-3 rounded-xl bg-surface-container-high border border-outline-variant/40 text-on-surface hover:text-primary font-medium active:scale-95 transition-all flex items-center justify-center gap-1.5 text-[12.5px]"
+            >
+              <span className="material-symbols-outlined text-[17px]">forum</span>
+              <span>Ver {restaurant.reviews?.length || 0} Reseñas</span>
+            </button>
+          </div>
+
+          {/* Desglose de Criterios */}
+          <div className="flex items-center justify-between pt-1">
+            <div>
+              <span className="font-label-caps text-primary tracking-widest text-[10px] uppercase">
+                ESTÁNDARES DE BIOSEGURIDAD
+              </span>
+              <h3 className="font-headline-sm text-[19px] text-on-surface">
+                Desglose de Criterios Sanitarios
+              </h3>
+            </div>
+            <span className="font-label-caps text-on-surface-variant text-[11px]">
+              {restaurant.detailedMetrics.length} de {restaurant.detailedMetrics.length} Evaluados
+            </span>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            {restaurant.detailedMetrics.map((m) => (
+              <div
+                key={m.id}
+                className="glass-panel p-4 rounded-xl border border-outline-variant/30"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+                      <span
+                        className="material-symbols-outlined text-[16px]"
+                        data-icon={m.icon}
+                      >
+                        {m.icon}
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="font-label-md text-on-surface font-medium text-[13px]">
+                        {m.name}
+                      </h4>
+                      <p className="font-body-sm text-[11px] text-on-surface-variant">
+                        {m.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                  <span className="font-label-caps text-primary bg-primary-container/20 px-2 py-0.5 rounded text-[9.5px] border border-primary/30">
+                    {m.tag}
+                  </span>
+                </div>
+
+                <div className="flex items-baseline justify-between mt-3 mb-1.5">
+                  <span className="font-metric-display text-[22px] font-semibold text-on-surface leading-none">
+                    {m.value}
+                  </span>
+                  {m.threshold && (
+                    <span className="font-body-sm text-[11px] text-on-surface-variant">
+                      {m.threshold}
+                    </span>
+                  )}
+                </div>
+
+                <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+                  <div
+                    className="bg-primary h-full rounded-full transition-all duration-700"
+                    style={{ width: `${m.progressPercent}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* PESTAÑA 3: MÉTRICAS Y CERTIFICACIÓN */}
+      {activeTab === "metrics" && (
+        <div className="flex flex-col gap-4 animate-fadeIn">
           {/* Distintivo de Vitrina QR (Botón Destacado) */}
           <section className="glass-card rounded-xl p-3.5 border border-primary/40 bg-secondary-container/20 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -292,72 +426,6 @@ export default function RestaurantDetailPage() {
             </button>
           </section>
 
-          {/* Desglose de Criterios */}
-          <div className="flex items-center justify-between pt-1">
-            <div>
-              <span className="font-label-caps text-primary tracking-widest text-[10px] uppercase">
-                ESTÁNDARES DE BIOSEGURIDAD
-              </span>
-              <h3 className="font-headline-sm text-[19px] text-on-surface">
-                Desglose de Criterios Sanitarios
-              </h3>
-            </div>
-            <span className="font-label-caps text-on-surface-variant text-[11px]">
-              {restaurant.detailedMetrics.length} de {restaurant.detailedMetrics.length} Evaluados
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            {restaurant.detailedMetrics.map((m) => (
-              <div
-                key={m.id}
-                className="glass-panel p-4 rounded-xl border border-outline-variant/30"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
-                      <span
-                        className="material-symbols-outlined text-[16px]"
-                        data-icon={m.icon}
-                      >
-                        {m.icon}
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-label-md text-on-surface font-medium text-[13px]">
-                        {m.name}
-                      </h4>
-                      <p className="font-body-sm text-[11px] text-on-surface-variant">
-                        {m.subtitle}
-                      </p>
-                    </div>
-                  </div>
-                  <span className="font-label-caps text-primary bg-primary-container/20 px-2 py-0.5 rounded text-[9.5px] border border-primary/30">
-                    {m.tag}
-                  </span>
-                </div>
-
-                <div className="flex items-baseline justify-between mt-3 mb-1.5">
-                  <span className="font-metric-display text-[22px] font-semibold text-on-surface leading-none">
-                    {m.value}
-                  </span>
-                  {m.threshold && (
-                    <span className="font-body-sm text-[11px] text-on-surface-variant">
-                      {m.threshold}
-                    </span>
-                  )}
-                </div>
-
-                <div className="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
-                  <div
-                    className="bg-primary h-full rounded-full transition-all duration-700"
-                    style={{ width: `${m.progressPercent}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-
           {/* Cronología de Sensores */}
           {restaurant.chronology.length > 0 && (
             <section className="glass-panel rounded-xl p-4 border border-outline-variant/30">
@@ -369,7 +437,7 @@ export default function RestaurantDetailPage() {
                   >
                     schedule
                   </span>
-                  <h4 className="font-headline-sm text-[17px] text-on-surface">
+                  <h4 className="font-headline-sm text-[16px] text-on-surface">
                     Registro de Monitoreo en Vivo
                   </h4>
                 </div>
@@ -399,8 +467,25 @@ export default function RestaurantDetailPage() {
             </section>
           )}
 
+          {/* Botón de Descarga Informe */}
+          <button
+            type="button"
+            onClick={() =>
+              alert("Generando informe clínico oficial en PDF con hash de bioseguridad...")
+            }
+            className="w-full py-3 rounded-xl border border-outline-variant/40 bg-surface-container/60 hover:border-primary text-on-surface hover:text-primary transition-colors flex items-center justify-center gap-2 active:scale-95 text-[12px] font-medium"
+          >
+            <span className="material-symbols-outlined text-[17px]">picture_as_pdf</span>
+            <span>Descargar Informe Certificado en PDF</span>
+          </button>
+        </div>
+      )}
+
+      {/* PESTAÑA 2: RESEÑAS Y OPINIONES COMUNITARIAS */}
+      {activeTab === "reviews" && (
+        <div className="flex flex-col gap-4 animate-fadeIn">
           {/* Sección de Reseñas de la Comunidad y Réplicas */}
-          <section className="flex flex-col gap-3 pt-2">
+          <section className="flex flex-col gap-3 pt-1">
             <div className="flex items-center justify-between">
               <div>
                 <span className="font-label-caps text-primary tracking-widest text-[10px] uppercase">
@@ -560,44 +645,9 @@ export default function RestaurantDetailPage() {
             </div>
           </section>
         </div>
-      </main>
-
-      {/* Dock Inferior Flotante de Acciones */}
-      <div className="fixed bottom-14 left-0 right-0 z-30 flex justify-center p-3 pointer-events-none max-w-md mx-auto">
-        <div className="w-full pointer-events-auto bg-surface-container-lowest/90 backdrop-blur-xl border border-outline-variant/40 rounded-full p-1.5 shadow-2xl flex items-center gap-2">
-          <button
-            onClick={() =>
-              alert("Generando informe clínico oficial en PDF con hash de bioseguridad...")
-            }
-            className="flex-1 py-2.5 px-3 rounded-full border border-outline-variant/40 bg-surface-container/60 hover:border-primary text-on-surface hover:text-primary transition-colors flex items-center justify-center gap-1.5 active:scale-95 text-[12px] font-medium"
-          >
-            <span
-              className="material-symbols-outlined text-[16px]"
-              data-icon="picture_as_pdf"
-            >
-              picture_as_pdf
-            </span>
-            <span className="font-label-caps text-[10px] tracking-wide">
-              Informe PDF
-            </span>
-          </button>
-
-          <button
-            onClick={() => setIsAuditModalOpen(true)}
-            className="flex-[1.4] py-2.5 px-4 rounded-full bg-primary-container text-on-primary-container font-bold shadow-lg hover:shadow-[0_0_16px_rgba(166,192,198,0.4)] transition-all flex items-center justify-center gap-2 active:scale-95 text-[12.5px]"
-          >
-            <span
-              className="material-symbols-outlined text-[17px]"
-              data-icon="assignment_turned_in"
-            >
-              assignment_turned_in
-            </span>
-            <span className="font-label-caps text-[11px] tracking-wider text-on-primary-container">
-              Nueva Auditoría
-            </span>
-          </button>
+      )}
         </div>
-      </div>
+      </main>
 
       <BottomNavBar onOpenAudit={() => setIsAuditModalOpen(true)} />
 
