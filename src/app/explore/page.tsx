@@ -45,23 +45,23 @@ export default function ExplorePage() {
 
   const levelBadges: Record<BiosecurityLevel, { label: string; style: string }> = {
     alerta: {
-      label: "⚠️ Nivel 1: Alerta Sanitaria",
+      label: "Nivel 1: Alerta Sanitaria",
       style: "bg-red-950/60 text-rose-300 border-rose-600/40",
     },
     filtrado: {
-      label: "⏳ Nivel 2: Filtrado",
+      label: "Nivel 2: Filtrado",
       style: "bg-orange-950/60 text-orange-300 border-orange-500/40",
     },
     antiseptico: {
-      label: "🛡️ Nivel 3: Antiséptico",
+      label: "Nivel 3: Antiséptico",
       style: "bg-teal-950/60 text-teal-300 border-teal-500/40",
     },
     esterilizado: {
-      label: "⚡ Nivel 4: Esterilizado",
+      label: "Nivel 4: Esterilizado",
       style: "bg-purple-950/60 text-purple-300 border-purple-400/40",
     },
     aseptico: {
-      label: "💎 Nivel 5: Aséptico",
+      label: "Nivel 5: Aséptico",
       style: "bg-secondary-container/60 text-primary border-primary/40",
     },
   };
@@ -122,7 +122,7 @@ export default function ExplorePage() {
                 : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
             }`}
           >
-            💎 Aséptico
+            Aséptico
           </button>
           <button
             onClick={() => setSelectedFilter("esterilizado")}
@@ -132,7 +132,7 @@ export default function ExplorePage() {
                 : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
             }`}
           >
-            ⚡ Esterilizado
+            Esterilizado
           </button>
           <button
             onClick={() => setSelectedFilter("antiseptico")}
@@ -142,7 +142,7 @@ export default function ExplorePage() {
                 : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
             }`}
           >
-            🛡️ Antiséptico
+            Antiséptico
           </button>
           <button
             onClick={() => setSelectedFilter("filtrado")}
@@ -152,7 +152,7 @@ export default function ExplorePage() {
                 : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
             }`}
           >
-            🔍 Filtrado
+            Filtrado
           </button>
           <button
             onClick={() => setSelectedFilter("alerta")}
@@ -162,7 +162,7 @@ export default function ExplorePage() {
                 : "bg-surface-container-high/70 text-on-surface-variant border-outline-variant/30"
             }`}
           >
-            ⚠️ Alerta Sanitaria
+            Alerta Sanitaria
           </button>
         </div>
 

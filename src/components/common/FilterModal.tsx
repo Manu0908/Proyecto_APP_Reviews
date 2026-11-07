@@ -81,11 +81,11 @@ export function FilterModal({
             <div className="flex flex-wrap gap-2">
               {[
                 { id: "all", label: "Todos los Grados" },
-                { id: "aseptico", label: "💎 N5: Aséptico (95-100)" },
-                { id: "esterilizado", label: "⚡ N4: Esterilizado (80-94)" },
-                { id: "antiseptico", label: "🛡️ N3: Antiséptico (70-79)" },
-                { id: "filtrado", label: "🔍 N2: Filtrado (60-69)" },
-                { id: "alerta", label: "⚠️ N1: Alerta Sanitaria (<60)" },
+                { id: "aseptico", label: "N5: Aséptico (95-100)" },
+                { id: "esterilizado", label: "N4: Esterilizado (80-94)" },
+                { id: "antiseptico", label: "N3: Antiséptico (70-79)" },
+                { id: "filtrado", label: "N2: Filtrado (60-69)" },
+                { id: "alerta", label: "N1: Alerta Sanitaria (<60)" },
               ].map((lvl) => (
                 <button
                   key={lvl.id}

@@ -420,8 +420,15 @@ export default function RestaurantDetailPage() {
               onClick={() => setIsValidated(!isValidated)}
               className="px-2.5 py-1.5 rounded-md bg-secondary-container/50 border border-outline-variant/40 text-on-surface hover:text-primary transition-colors flex items-center gap-1"
             >
-              <span className="font-label-caps text-[10px]">
-                {isValidated ? "VÁLIDO ✓" : "COMPROBAR"}
+              <span className="font-label-caps text-[10px] flex items-center gap-1">
+                {isValidated ? (
+                  <>
+                    <span>VÁLIDO</span>
+                    <span className="material-symbols-outlined text-[13px] text-teal-400">check</span>
+                  </>
+                ) : (
+                  "COMPROBAR"
+                )}
               </span>
             </button>
           </section>
@@ -552,30 +559,30 @@ export default function RestaurantDetailPage() {
                       </div>
                     </div>
 
-                    {/* Desglose de estrellas rápidas */}
+                    {/* Desglose de puntuaciones por criterio */}
                     <div className="grid grid-cols-4 gap-1.5 bg-surface-container-lowest/80 p-2 rounded-xl text-center text-[10px] font-label-caps text-outline">
                       <div>
                         <span>Baños</span>
                         <strong className="block text-primary text-[11px] font-metric-sm">
-                          {rev.criteriaRatings.bathrooms}★
+                          {rev.criteriaRatings.bathrooms} / 5
                         </strong>
                       </div>
                       <div>
                         <span>Personal</span>
                         <strong className="block text-primary text-[11px] font-metric-sm">
-                          {rev.criteriaRatings.staff}★
+                          {rev.criteriaRatings.staff} / 5
                         </strong>
                       </div>
                       <div>
                         <span>Vajilla</span>
                         <strong className="block text-primary text-[11px] font-metric-sm">
-                          {rev.criteriaRatings.utensils}★
+                          {rev.criteriaRatings.utensils} / 5
                         </strong>
                       </div>
                       <div>
                         <span>Salón</span>
                         <strong className="block text-primary text-[11px] font-metric-sm">
-                          {rev.criteriaRatings.hall}★
+                          {rev.criteriaRatings.hall} / 5
                         </strong>
                       </div>
                     </div>

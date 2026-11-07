@@ -52,9 +52,9 @@ export function TopAppBar({
                 type="button"
                 onClick={() => onSearchChange?.("")}
                 aria-label="Limpiar búsqueda"
-                className="text-outline hover:text-on-surface text-[13px] p-0.5 rounded-full"
+                className="text-outline hover:text-on-surface p-0.5 rounded-full flex items-center justify-center"
               >
-                ✕
+                <span className="material-symbols-outlined text-[16px]">close</span>
               </button>
             )}
           </div>

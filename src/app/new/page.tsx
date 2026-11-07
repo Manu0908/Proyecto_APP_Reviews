@@ -166,8 +166,15 @@ export default function NewRestaurantPage() {
                 <span className="material-symbols-outlined text-[24px]" data-icon="add_a_photo">
                   add_a_photo
                 </span>
-                <span className="font-label-md text-[12px]">
-                  {hasPhoto ? "✓ Foto Adjunta (fachada_local.webp)" : "Tocar para adjuntar foto de fachada"}
+                <span className="font-label-md text-[12px] flex items-center gap-1">
+                  {hasPhoto ? (
+                    <>
+                      <span className="material-symbols-outlined text-[15px] text-teal-400">check</span>
+                      <span>Foto Adjunta (fachada_local.webp)</span>
+                    </>
+                  ) : (
+                    "Tocar para adjuntar foto de fachada"
+                  )}
                 </span>
               </button>
             </div>

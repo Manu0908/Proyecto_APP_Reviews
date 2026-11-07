@@ -205,13 +205,20 @@ export function QuickAuditModal({
               <button
                 type="button"
                 onClick={() => setHasReceipt(!hasReceipt)}
-                className={`text-[10.5px] font-label-caps px-2.5 py-1 rounded-full border transition-all ${
+                className={`text-[10.5px] font-label-caps px-2.5 py-1 rounded-full border transition-all inline-flex items-center gap-1 ${
                   hasReceipt
                     ? "bg-secondary-container text-primary border-primary/50 font-bold"
                     : "text-outline border-outline-variant/40 hover:text-on-surface"
                 }`}
               >
-                {hasReceipt ? "✓ Foto de Factura Adjunta" : "+ Adjuntar Factura"}
+                {hasReceipt ? (
+                  <>
+                    <span className="material-symbols-outlined text-[13px] text-teal-400">check</span>
+                    <span>Foto de Factura Adjunta</span>
+                  </>
+                ) : (
+                  "+ Adjuntar Factura"
+                )}
               </button>
             </div>
 
