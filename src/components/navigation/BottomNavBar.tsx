@@ -75,7 +75,7 @@ export function BottomNavBar({}: BottomNavBarProps = {}) {
         </span>
       </Link>
 
-      {/* Tab 4: Inspector / Perfil */}
+      {/* Tab 4: Perfil / Cuenta */}
       <Link
         href="/profile"
         className={`flex flex-col items-center justify-center min-h-[48px] min-w-[64px] active:scale-95 transition-transform duration-150 group ${
@@ -90,7 +90,7 @@ export function BottomNavBar({}: BottomNavBarProps = {}) {
           person
         </span>
         <span className="font-label-caps text-[10px] mt-0.5 tracking-wider">
-          Inspector
+          Perfil
         </span>
       </Link>
     </nav>

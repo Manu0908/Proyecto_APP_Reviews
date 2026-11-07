@@ -8,6 +8,10 @@ interface TopAppBarProps {
   showBack?: boolean;
   onFilterClick?: () => void;
   subtitle?: string;
+  isSearchMode?: boolean;
+  searchQuery?: string;
+  onSearchChange?: (val: string) => void;
+  searchPlaceholder?: string;
 }
 
 export function TopAppBar({
@@ -15,68 +19,115 @@ export function TopAppBar({
   showBack = false,
   onFilterClick,
   subtitle,
+  isSearchMode = false,
+  searchQuery = "",
+  onSearchChange,
+  searchPlaceholder = "Buscar restaurantes, cafés, zonas...",
 }: TopAppBarProps) {
   const router = useRouter();
 
   return (
-    <header className="bg-surface/85 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center w-full px-space-md py-space-sm sticky top-0 left-0 z-40">
-      <div className="flex items-center gap-space-sm">
-        {showBack ? (
-          <button
-            type="button"
-            onClick={() => router.back()}
-            aria-label="Volver a la vista anterior"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150"
-          >
+    <header className="bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center w-full px-space-md py-2.5 sticky top-0 left-0 z-40 transition-all">
+      {isSearchMode ? (
+        // Barra de búsqueda moderna de ancho completo (Estilo Google Maps / inDrive)
+        <div className="w-full flex items-center gap-2">
+          <div className="flex-1 flex items-center gap-2.5 bg-surface-container-high/90 border border-outline-variant/50 rounded-full px-3.5 py-2 shadow-sm focus-within:border-primary focus-within:ring-1 focus-within:ring-primary/40 transition-all">
             <span
-              className="material-symbols-outlined text-[20px]"
-              data-icon="arrow_back"
+              className="material-symbols-outlined text-[20px] text-primary shrink-0"
+              data-icon="search"
             >
-              arrow_back
-            </span>
-          </button>
-        ) : (
-          <Link
-            href="/explore"
-            aria-label="Buscar restaurantes y locales"
-            className="w-9 h-9 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150"
-          >
-            <span className="material-symbols-outlined" data-icon="search">
               search
             </span>
-          </Link>
-        )}
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => onSearchChange?.(e.target.value)}
+              placeholder={searchPlaceholder}
+              className="bg-transparent border-none outline-none text-on-surface text-[13.5px] w-full placeholder:text-outline focus:ring-0 p-0 font-body-md"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => onSearchChange?.("")}
+                aria-label="Limpiar búsqueda"
+                className="text-outline hover:text-on-surface text-[13px] p-0.5 rounded-full"
+              >
+                ✕
+              </button>
+            )}
+          </div>
 
-        <div>
-          {subtitle && (
-            <span className="font-label-caps text-primary uppercase block tracking-wider text-[10px]">
-              {subtitle}
-            </span>
+          {onFilterClick && (
+            <button
+              type="button"
+              onClick={onFilterClick}
+              aria-label="Filtros de búsqueda"
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container-high/90 border border-outline-variant/50 text-primary hover:bg-surface-container-highest transition-colors active:scale-95 shadow-sm shrink-0"
+            >
+              <span className="material-symbols-outlined text-[20px]" data-icon="tune">
+                tune
+              </span>
+            </button>
           )}
-          <h1 className="font-headline-sm text-[18px] text-on-surface tracking-tight font-medium">
-            {title}
-          </h1>
         </div>
-      </div>
+      ) : (
+        // Encabezado estándar para vistas secundarias
+        <>
+          <div className="flex items-center gap-space-sm">
+            {showBack ? (
+              <button
+                type="button"
+                onClick={() => router.back()}
+                aria-label="Volver a la vista anterior"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150"
+              >
+                <span
+                  className="material-symbols-outlined text-[20px]"
+                  data-icon="arrow_back"
+                >
+                  arrow_back
+                </span>
+              </button>
+            ) : (
+              <Link
+                href="/explore"
+                aria-label="Buscar restaurantes y locales"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150"
+              >
+                <span className="material-symbols-outlined text-[20px]" data-icon="search">
+                  search
+                </span>
+              </Link>
+            )}
 
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-lowest/80 border border-outline-variant/40">
-          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
-          <span className="font-label-caps text-[9px] text-secondary uppercase tracking-widest">
-            En Vivo
-          </span>
-        </div>
+            <div>
+              {subtitle && (
+                <span className="font-label-caps text-primary uppercase block tracking-wider text-[10px]">
+                  {subtitle}
+                </span>
+              )}
+              <h1 className="font-headline-sm text-[18px] text-on-surface tracking-tight font-medium">
+                {title}
+              </h1>
+            </div>
+          </div>
 
-        <button
-          onClick={onFilterClick}
-          aria-label="Filtros de búsqueda"
-          className="w-9 h-9 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150"
-        >
-          <span className="material-symbols-outlined" data-icon="tune">
-            tune
-          </span>
-        </button>
-      </div>
+          <div className="flex items-center gap-2">
+            {onFilterClick && (
+              <button
+                type="button"
+                onClick={onFilterClick}
+                aria-label="Filtros de búsqueda"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors active:scale-95 duration-150"
+              >
+                <span className="material-symbols-outlined text-[20px]" data-icon="tune">
+                  tune
+                </span>
+              </button>
+            )}
+          </div>
+        </>
+      )}
     </header>
   );
 }

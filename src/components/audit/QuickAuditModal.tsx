@@ -13,15 +13,13 @@ interface QuickAuditModalProps {
 export function QuickAuditModal({
   isOpen,
   onClose,
-  restaurantName = "L’Écume Marine",
-  restaurantLocation = "Mayfair, London W1J",
 }: QuickAuditModalProps) {
   // Estado para acordeones abiertos
   const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({
     bathrooms: true,
     staff: true,
-    utensils: true,
-    hall: true,
+    utensils: false,
+    hall: false,
   });
 
   // Estado de chips seleccionados
@@ -57,50 +55,6 @@ export function QuickAuditModal({
     }));
   };
 
-  // Cálculo ponderado oficial (40% Baños, 35% Personal, 15% Utensilios, 10% Salón)
-  const bathroomsArea = MOCK_AUDIT_AREAS.find((a) => a.id === "bathrooms");
-  const staffArea = MOCK_AUDIT_AREAS.find((a) => a.id === "staff");
-  const utensilsArea = MOCK_AUDIT_AREAS.find((a) => a.id === "utensils");
-  const hallArea = MOCK_AUDIT_AREAS.find((a) => a.id === "hall");
-
-  const bathroomsCount = bathroomsArea?.chips.filter((c) => selectedChips[c.id]).length || 0;
-  const bathroomsTotal = bathroomsArea?.chips.length || 5;
-  const staffCount = staffArea?.chips.filter((c) => selectedChips[c.id]).length || 0;
-  const staffTotal = staffArea?.chips.length || 4;
-  const utensilsCount = utensilsArea?.chips.filter((c) => selectedChips[c.id]).length || 0;
-  const utensilsTotal = utensilsArea?.chips.length || 4;
-  const hallCount = hallArea?.chips.filter((c) => selectedChips[c.id]).length || 0;
-  const hallTotal = hallArea?.chips.length || 4;
-
-  const bathroomsRatio = bathroomsCount / bathroomsTotal;
-  const staffRatio = staffCount / staffTotal;
-  const utensilsRatio = utensilsCount / utensilsTotal;
-  const hallRatio = hallCount / hallTotal;
-
-  const rawScore =
-    bathroomsRatio * 40 +
-    staffRatio * 35 +
-    utensilsRatio * 15 +
-    hallRatio * 10;
-
-  // REGLA DE VETO: Si Baños y Salubridad < 50% (menos de 3 criterios),
-  // el local queda vetado de certificación: máximo 40 pts y Nivel 1 Alerta Sanitaria.
-  const isVetoed = bathroomsRatio < 0.5;
-  const finalScoreNum = isVetoed ? Math.min(rawScore, 40) : rawScore;
-  const currentScore = finalScoreNum.toFixed(1);
-
-  const currentLevelName = isVetoed
-    ? "⚠️ N1: Alerta Sanitaria (Veto)"
-    : finalScoreNum >= 95
-    ? "💎 N5: Aséptico Platinum"
-    : finalScoreNum >= 80
-    ? "⚡ N4: Esterilizado"
-    : finalScoreNum >= 70
-    ? "🛡️ N3: Antiséptico"
-    : finalScoreNum >= 60
-    ? "🔍 N2: Filtrado"
-    : "⚠️ N1: Alerta Sanitaria";
-
   const handleSubmit = () => {
     setIsSubmitting(true);
     setTimeout(() => {
@@ -109,8 +63,8 @@ export function QuickAuditModal({
       setTimeout(() => {
         setIsSuccess(false);
         onClose();
-      }, 1500);
-    }, 900);
+      }, 1400);
+    }, 800);
   };
 
   return (
@@ -118,11 +72,11 @@ export function QuickAuditModal({
       {/* Backdrop blur overlay */}
       <div
         onClick={onClose}
-        className="absolute inset-0 bg-surface-container-lowest/70 backdrop-blur-[4px] z-10 transition-opacity"
+        className="absolute inset-0 bg-slate-950/60 backdrop-blur-[4px] z-10 transition-opacity"
       />
 
       {/* Bottom Sheet Modal Container */}
-      <div className="relative z-20 w-full bg-surface-container-low/95 border-t border-outline-variant/40 rounded-t-[28px] frosted-sheet flex flex-col max-h-[85vh] transition-all duration-300">
+      <div className="relative z-20 w-full bg-surface-container-low border-t border-outline-variant/40 rounded-t-[28px] frosted-sheet flex flex-col max-h-[85vh] transition-all duration-300 shadow-2xl">
         {/* Top Handle Bar */}
         <div
           onClick={onClose}
@@ -131,91 +85,26 @@ export function QuickAuditModal({
           <div className="w-12 h-1 rounded-full bg-outline-variant/70 hover:bg-outline transition-colors" />
         </div>
 
-        {/* Modal Header Section */}
-        <div className="px-5 pt-1 pb-3 flex items-start justify-between border-b border-outline-variant/20">
+        {/* Modal Header Section Simplificado: Título directo sin datos redundantes ni cálculo en vivo */}
+        <div className="px-5 pt-1 pb-3 flex items-center justify-between border-b border-outline-variant/20">
           <div>
-            <div className="flex items-center space-x-2 mb-1">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              <span className="font-label-caps text-secondary tracking-widest uppercase text-[10px]">
-                Modo Inspección Rápida
-              </span>
-            </div>
-            <h2 className="font-headline-md text-[22px] text-on-surface font-normal tracking-tight">
-              Auditoría Sanitaria
+            <h2 className="font-headline-sm text-[20px] text-on-surface font-semibold tracking-tight">
+              Calificar y Opinar
             </h2>
-            <p className="font-body-sm text-[12px] text-on-surface-variant mt-0.5 flex items-center gap-1.5">
-              <span
-                className="material-symbols-outlined text-primary text-[15px]"
-                data-icon="pin_drop"
-              >
-                pin_drop
-              </span>
-              <span>
-                {restaurantName} • {restaurantLocation}
-              </span>
+            <p className="font-body-sm text-[12px] text-outline mt-0.5">
+              Marca los puntos observados en tu visita
             </p>
           </div>
 
-          {/* Live Composite Score Meter */}
-          <div className="flex flex-col items-end">
-            <div
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full border shadow-sm transition-colors ${
-                isVetoed
-                  ? "bg-red-950/60 border-red-500/60 text-rose-300"
-                  : "bg-surface-container-high border-primary/30 shadow-[0_0_12px_rgba(173,204,211,0.18)]"
-              }`}
-            >
-              <span
-                className={`material-symbols-outlined text-[17px] ${
-                  isVetoed ? "text-rose-400" : "text-primary"
-                }`}
-                data-icon={isVetoed ? "gpp_bad" : "verified_user"}
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                {isVetoed ? "gpp_bad" : "verified_user"}
-              </span>
-              <div className="flex items-baseline">
-                <span className="font-label-caps text-[9px] text-on-surface-variant mr-1">
-                  GRADE
-                </span>
-                <span
-                  className={`font-metric-sm text-metric-sm font-semibold ${
-                    isVetoed ? "text-rose-300" : "text-on-surface"
-                  }`}
-                >
-                  {currentScore}
-                </span>
-              </div>
-            </div>
-            <span
-              className={`font-label-caps text-[9px] mt-1 uppercase tracking-wider font-medium ${
-                isVetoed ? "text-rose-400" : "text-primary/90"
-              }`}
-            >
-              {currentLevelName}
-            </span>
-          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Cerrar modal"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-outline hover:text-on-surface hover:bg-surface-container-high transition-colors"
+          >
+            <span className="material-symbols-outlined text-[20px]">close</span>
+          </button>
         </div>
-
-        {/* Banner de Regla de Veto Activa */}
-        {isVetoed && (
-          <div className="mx-5 mt-2.5 p-2.5 rounded-xl bg-red-950/70 border border-red-500/50 flex items-start gap-2.5">
-            <span
-              className="material-symbols-outlined text-rose-400 text-[18px] shrink-0 mt-0.5"
-              data-icon="warning"
-            >
-              warning
-            </span>
-            <div className="text-[11px] leading-snug">
-              <span className="font-semibold text-rose-200 block uppercase tracking-wide text-[10px]">
-                Regla de Veto Sanitario Activada
-              </span>
-              <span className="text-rose-300/90 text-[10.5px]">
-                Fallas en Baños y Salubridad (&lt; 50% de criterios). El establecimiento no puede ser certificado y su calificación máxima está limitada a Nivel 1.
-              </span>
-            </div>
-          </div>
-        )}
 
         {/* Scrollable Inspection Accordion Area */}
         <div className="overflow-y-auto custom-scrollbar px-5 py-3 space-y-3 pb-8">
@@ -236,30 +125,30 @@ export function QuickAuditModal({
                   className="w-full px-4 py-3 flex items-center justify-between hover:bg-surface-container-high/40 transition-colors text-left"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="w-7 h-7 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+                    <div className="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
                       <span
-                        className="material-symbols-outlined text-[17px]"
+                        className="material-symbols-outlined text-[18px]"
                         data-icon={area.icon}
                       >
                         {area.icon}
                       </span>
                     </div>
                     <div>
-                      <span className="font-label-md text-[13px] text-on-surface font-medium block">
-                        {area.number}. {area.name}
+                      <span className="font-label-md text-[13.5px] text-on-surface font-medium block">
+                        {area.name}
                       </span>
                       <span className="font-label-caps text-[9px] text-outline block">
-                        {area.code}
+                        {area.chips.length} criterios clave
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-center space-x-2">
-                    <span className="font-label-caps text-[10px] px-2 py-0.5 rounded-full bg-surface-container-highest text-primary">
-                      {areaActiveCount}/{area.chips.length} pass
+                    <span className="font-label-caps text-[10.5px] px-2.5 py-0.5 rounded-full bg-secondary-container text-primary font-semibold">
+                      {areaActiveCount}/{area.chips.length}
                     </span>
                     <span
-                      className={`material-symbols-outlined text-on-surface-variant transition-transform duration-200 ${
+                      className={`material-symbols-outlined text-outline transition-transform duration-200 ${
                         isOpenAccordion ? "rotate-180" : ""
                       }`}
                       data-icon="expand_more"
@@ -282,9 +171,9 @@ export function QuickAuditModal({
                             key={chip.id}
                             type="button"
                             onClick={() => toggleChip(chip.id)}
-                            className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-label-md font-label-md transition-all ${
+                            className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-label-md font-label-md transition-all active:scale-95 ${
                               isSelected
-                                ? "bg-primary-container text-on-primary-container border border-primary/40 shadow-[0_0_10px_rgba(123,153,160,0.3)]"
+                                ? "bg-primary-container text-on-primary-container border border-primary/40 shadow-sm"
                                 : "bg-surface-container-high text-on-surface-variant border border-outline-variant/60 hover:border-primary-container"
                             }`}
                           >
@@ -307,22 +196,22 @@ export function QuickAuditModal({
             );
           })}
 
-          {/* Notes & Evidence Section (Fantasma) */}
+          {/* Notes & Evidence Section */}
           <div className="pt-2 space-y-2.5">
             <div className="flex items-center justify-between">
               <label className="font-label-caps text-outline block uppercase tracking-wider text-[10px]">
-                Nota Clínica & Evidencia Fotográfica
+                Comentario y Fotos (Opcional)
               </label>
               <button
                 type="button"
                 onClick={() => setHasReceipt(!hasReceipt)}
-                className={`text-[10px] font-label-caps px-2 py-0.5 rounded-full border transition-all ${
+                className={`text-[10.5px] font-label-caps px-2.5 py-1 rounded-full border transition-all ${
                   hasReceipt
-                    ? "bg-secondary-container text-primary border-primary/40"
-                    : "text-outline border-outline-variant/40"
+                    ? "bg-secondary-container text-primary border-primary/50 font-bold"
+                    : "text-outline border-outline-variant/40 hover:text-on-surface"
                 }`}
               >
-                {hasReceipt ? "✓ Ticket Adjunto (+50 XP)" : "+ Subir Ticket de Consumo"}
+                {hasReceipt ? "✓ Foto de Factura Adjunta" : "+ Adjuntar Factura"}
               </button>
             </div>
 
@@ -331,13 +220,13 @@ export function QuickAuditModal({
                 type="text"
                 value={evidenceNote}
                 onChange={(e) => setEvidenceNote(e.target.value)}
-                placeholder="Observación opcional (ej. revisión UV completada)..."
-                className="w-full bg-surface-container-lowest/80 border border-outline-variant/60 rounded-full px-4 py-2.5 text-body-sm text-[12.5px] text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container/20 transition-all pr-24"
+                placeholder="Escribe tu opinión o detalles del local..."
+                className="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-full px-4 py-2.5 text-body-sm text-[13px] text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all pr-24 font-body-md"
               />
               <button
                 type="button"
-                onClick={() => alert("Cámara fantasma: Permite adjuntar fotos de cocina, baños o ticket.")}
-                className="absolute right-1.5 px-3 py-1.5 rounded-full bg-secondary-container/80 hover:bg-secondary-container text-primary font-label-md text-[12px] flex items-center space-x-1 transition-colors border border-outline-variant/40"
+                onClick={() => alert("Cámara: Puedes adjuntar fotos de platos, instalaciones o recibo.")}
+                className="absolute right-1.5 px-3 py-1.5 rounded-full bg-secondary-container hover:bg-secondary-container/90 text-primary font-label-md text-[12px] flex items-center space-x-1 transition-colors border border-outline-variant/40"
               >
                 <span
                   className="material-symbols-outlined text-[16px]"
@@ -358,8 +247,8 @@ export function QuickAuditModal({
               onClick={handleSubmit}
               className={`w-full py-3.5 px-6 rounded-full font-headline-sm text-[15px] font-semibold tracking-tight active:scale-[0.98] transition-all flex items-center justify-center space-x-2 ${
                 isSuccess
-                  ? "bg-surface-bright text-primary border border-primary/40"
-                  : "bg-primary-container hover:bg-primary text-on-primary-container shadow-[0_0_20px_rgba(123,153,160,0.4)]"
+                  ? "bg-teal-600 text-white border border-teal-500 shadow-md"
+                  : "bg-primary text-on-primary hover:bg-primary/95 shadow-md"
               }`}
             >
               {isSubmitting ? (
@@ -370,7 +259,7 @@ export function QuickAuditModal({
                   >
                     sync
                   </span>
-                  <span>Sellando Registro de Bioseguridad...</span>
+                  <span>Publicando Reseña...</span>
                 </>
               ) : isSuccess ? (
                 <>
@@ -381,32 +270,20 @@ export function QuickAuditModal({
                   >
                     check_circle
                   </span>
-                  <span>¡Auditoría Verificada y Registrada! (+60 XP)</span>
+                  <span>¡Reseña Publicada con Éxito!</span>
                 </>
               ) : (
                 <>
                   <span
                     className="material-symbols-outlined text-[19px]"
-                    data-icon="verified"
+                    data-icon="rate_review"
                   >
-                    verified
+                    rate_review
                   </span>
-                  <span>Confirmar y Enviar Auditoría</span>
+                  <span>Publicar Reseña</span>
                 </>
               )}
             </button>
-
-            <div className="flex items-center justify-center space-x-2 mt-2">
-              <span
-                className="material-symbols-outlined text-[12px] text-outline"
-                data-icon="lock"
-              >
-                lock
-              </span>
-              <span className="font-label-caps text-[9px] text-outline tracking-wider">
-                REGISTRO CRIPTOGRÁFICO • AUDITORÍA EN TIEMPO REAL
-              </span>
-            </div>
           </div>
         </div>
       </div>

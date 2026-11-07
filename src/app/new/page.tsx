@@ -84,7 +84,7 @@ export default function NewRestaurantPage() {
                 add_location
               </span>
               <p className="font-body-sm text-[12px] text-on-surface-variant leading-relaxed">
-                ¿Descubriste un nuevo restaurante? Agrégalo al mapa para que la comunidad de inspectores pueda evaluarlo y certificar su bioseguridad.
+                ¿Descubriste un nuevo restaurante? Agrégalo al mapa para que la comunidad pueda visitarlo, evaluarlo y dejar sus opiniones.
               </p>
             </div>
 

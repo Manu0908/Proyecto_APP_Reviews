@@ -264,7 +264,7 @@ export default function ExplorePage() {
                     href={`/restaurant/${restaurant.id}`}
                     className="flex-1 py-2 px-3 rounded-full bg-surface-container-high/80 border border-outline-variant/40 hover:border-primary/50 text-on-surface text-[12px] font-label-md text-center transition-colors active:scale-95"
                   >
-                    Ver Dossier
+                    Ver Ficha
                   </Link>
                   <button
                     onClick={() => setAuditTarget(restaurant)}

@@ -14,12 +14,12 @@ export default function ProfilePage() {
   return (
     <>
       <TopAppBar
-        title="Perfil de Inspector"
-        subtitle="Cuerpo Civil Sanitario"
+        title="Mi Perfil"
+        subtitle="Comunidad Gastronómica"
       />
 
       <main className="flex-1 flex flex-col px-space-md pt-3 pb-24 gap-4">
-        {/* Sub-Tabs: Modo Inspector vs Modo Propietario */}
+        {/* Sub-Tabs: Modo Perfil vs Modo Propietario */}
         <div className="flex bg-surface-container-lowest p-1 rounded-full border border-outline-variant/30">
           <button
             onClick={() => setActiveSubTab("inspector")}
@@ -29,7 +29,7 @@ export default function ProfilePage() {
                 : "text-outline hover:text-on-surface"
             }`}
           >
-            Inspector Civil
+            Mi Cuenta
           </button>
           <button
             onClick={() => setActiveSubTab("negocio")}

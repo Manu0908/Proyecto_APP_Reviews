@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { TopAppBar } from "@/components/navigation/TopAppBar";
@@ -10,16 +10,49 @@ import { FilterModal } from "@/components/common/FilterModal";
 import { MOCK_RESTAURANTS } from "@/data/mockData";
 import { Restaurant } from "@/types";
 
+// Skeleton de carga estilo YouTube / Shimmer profesional
+function MapSkeletonLoader() {
+  return (
+    <div className="absolute inset-0 z-30 bg-surface flex flex-col justify-between p-4 pointer-events-none animate-in fade-in duration-300">
+      {/* Barra de búsqueda skeleton */}
+      <div className="w-full h-11 rounded-full bg-surface-container-high/80 animate-pulse border border-outline-variant/30 flex items-center px-4 gap-3">
+        <div className="w-5 h-5 rounded-full bg-outline-variant/40" />
+        <div className="h-3.5 bg-outline-variant/30 rounded w-1/2" />
+      </div>
+
+      {/* Pines skeleton flotantes en el centro */}
+      <div className="relative flex-1 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-2 animate-pulse">
+          <div className="w-10 h-10 rounded-full bg-secondary-container/60 border-2 border-primary/30 flex items-center justify-center">
+            <span className="material-symbols-outlined text-primary text-[20px]">
+              restaurant
+            </span>
+          </div>
+          <div className="h-2.5 bg-outline-variant/40 rounded w-20" />
+        </div>
+      </div>
+
+      {/* Dock skeleton inferior */}
+      <div className="w-full h-24 rounded-t-2xl bg-surface-container-high/90 border-t border-outline-variant/30 p-4 space-y-2 animate-pulse mb-12">
+        <div className="w-12 h-1 bg-outline-variant/50 rounded-full mx-auto" />
+        <div className="flex justify-between items-center pt-1">
+          <div className="space-y-1.5 w-2/3">
+            <div className="h-4 bg-outline-variant/50 rounded w-3/4" />
+            <div className="h-3 bg-outline-variant/30 rounded w-1/2" />
+          </div>
+          <div className="w-12 h-8 rounded-full bg-outline-variant/40" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const InteractiveMap = dynamic(
   () =>
     import("@/components/map/InteractiveMap").then((mod) => mod.InteractiveMap),
   {
     ssr: false,
-    loading: () => (
-      <div className="w-full h-full min-h-[360px] bg-surface-container-lowest flex items-center justify-center text-outline text-[12px] font-label-caps">
-        <span className="animate-pulse">Cargando Vector Cartográfico...</span>
-      </div>
-    ),
+    loading: () => <MapSkeletonLoader />,
   }
 );
 
@@ -27,28 +60,49 @@ export default function MapPage() {
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant>(
     MOCK_RESTAURANTS[0]
   );
-  const [selectedCity, setSelectedCity] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const [maxDistance, setMaxDistance] = useState(10);
   const [onlyVerifiedReceipt, setOnlyVerifiedReceipt] = useState(false);
   const [zeroInfractionsOnly, setZeroInfractionsOnly] = useState(false);
 
+  // Niveles del Bottom Sheet: 1 = Mini-dock (88px), 2 = Ficha rápida (250px), 3 = Ficha completa (82vh)
+  const [sheetLevel, setSheetLevel] = useState<1 | 2 | 3>(1);
+
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [isUVMode, setIsUVMode] = useState(false);
-  const [sheetState, setSheetState] = useState<"peek" | "collapsed" | "expanded">("peek");
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
 
-  // Filtrado compuesto con ciudad
+  // Control de arrastre táctil (drag gestures)
+  const touchStartY = useRef<number | null>(null);
+
+  // Simulación de carga inicial suave (evita parpadeos o saltos abruptos)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsMapLoaded(true);
+    }, 450);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Filtrado reactivo en vivo por búsqueda y filtros de bioseguridad
   const displayedRestaurants = MOCK_RESTAURANTS.filter((r) => {
-    if (selectedCity !== "all" && r.city !== selectedCity && !r.city.includes(selectedCity)) {
-      return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const matchesName = r.name.toLowerCase().includes(q);
+      const matchesShort = r.shortName.toLowerCase().includes(q);
+      const matchesCuisine = r.cuisine.toLowerCase().includes(q);
+      const matchesCity = r.city.toLowerCase().includes(q);
+      const matchesLocation = r.location.toLowerCase().includes(q);
+      if (!matchesName && !matchesShort && !matchesCuisine && !matchesCity && !matchesLocation) {
+        return false;
+      }
     }
     if (activeFilter !== "all" && r.level !== activeFilter) return false;
     if (zeroInfractionsOnly && r.metrics.infractions > 0) return false;
     return true;
   });
 
-  // Sincronización para evitar restaurante fantasma si el actual es filtrado
+  // Sincronización para asegurar que siempre haya un restaurante válido
   useEffect(() => {
     if (
       displayedRestaurants.length > 0 &&
@@ -58,143 +112,142 @@ export default function MapPage() {
     }
   }, [displayedRestaurants, selectedRestaurant.id]);
 
-  const handleCityChange = (city: string) => {
-    setSelectedCity(city);
-    if (city === "all") {
-      setSelectedRestaurant(MOCK_RESTAURANTS[0]);
-    } else {
-      const firstInCity =
-        MOCK_RESTAURANTS.find((r) => r.city === city || r.city.includes(city)) ||
-        MOCK_RESTAURANTS[0];
-      setSelectedRestaurant(firstInCity);
-    }
-  };
-
   const handleResetFilters = () => {
     setActiveFilter("all");
-    setSelectedCity("all");
     setMaxDistance(10);
     setOnlyVerifiedReceipt(false);
     setZeroInfractionsOnly(false);
   };
 
+  // Manejo de gestos táctiles con umbrales de arrastre (swipe up / swipe down)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartY.current === null) return;
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaY = touchEndY - touchStartY.current;
+
+    // Arrastre hacia arriba (swipe up)
+    if (deltaY < -35) {
+      setSheetLevel((prev) => (prev === 1 ? 2 : 3));
+    }
+    // Arrastre hacia abajo (swipe down)
+    else if (deltaY > 35) {
+      setSheetLevel((prev) => (prev === 3 ? 2 : 1));
+    }
+
+    touchStartY.current = null;
+  };
+
   return (
     <>
+      {/* Barra de Búsqueda Superior de Ancho Completo (Estilo Google Maps / inDrive) */}
       <TopAppBar
-        title="Índice Sanitario"
+        isSearchMode={true}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Buscar restaurantes, cafés, zonas en Colombia..."
         onFilterClick={() => setIsFilterModalOpen(true)}
       />
 
-      {/* Main Canvas con Mapa Interactivo MapLibre GL */}
-      <main className="relative w-full h-[calc(100vh-116px)] flex flex-col justify-between overflow-hidden">
-        {/* Controles de Filtros Flotantes Superiores: Selector de Ciudades */}
-        <div className="absolute top-3 left-0 right-0 z-20 px-space-md pointer-events-none">
-          <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 pointer-events-auto">
-            {[
-              { id: "all", label: "Toda Colombia" },
-              { id: "Santa Marta", label: "Santa Marta" },
-              { id: "Bogotá", label: "Bogotá" },
-              { id: "Medellín", label: "Medellín" },
-            ].map((city) => (
-              <button
-                key={city.id}
-                onClick={() => handleCityChange(city.id)}
-                className={`shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-label-md font-label-md transition-all active:scale-95 border backdrop-blur-md shadow-md ${
-                  selectedCity === city.id
-                    ? "bg-primary-container text-on-primary-container border-primary/50 font-bold"
-                    : "bg-surface-container-high/90 text-on-surface-variant border-outline-variant/40"
-                }`}
-              >
-                <span className="material-symbols-outlined text-[14px]" data-icon="location_on">
-                  location_on
-                </span>
-                <span>{city.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+      {/* Canvas del Mapa y Bottom Sheet Draggable */}
+      <main className="relative w-full h-[calc(100vh-120px)] flex flex-col justify-between overflow-hidden bg-surface">
+        {!isMapLoaded && <MapSkeletonLoader />}
 
-        {/* Botón Flotante Fijo e Inamovible: Modo Luz Negra UV */}
-        <button
-          onClick={() => setIsUVMode(!isUVMode)}
-          className={`absolute top-14 right-3 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-label-md text-[11.5px] border backdrop-blur-xl shadow-xl transition-all active:scale-95 ${
-            isUVMode
-              ? "bg-purple-950/90 text-purple-200 border-purple-400 shadow-[0_0_16px_rgba(168,85,247,0.6)]"
-              : "bg-surface-container-high/90 text-on-surface-variant border-outline-variant/50 hover:border-purple-400/50"
-          }`}
-          title="Alternar Modo Luz Negra UV"
-        >
-          <span className="material-symbols-outlined text-[15px] text-purple-300" data-icon="flare">
-            flare
-          </span>
-          <span className="font-semibold">{isUVMode ? "UV ON" : "Luz UV"}</span>
-        </button>
-
-        {/* Mapa Libre GL con soporte táctil, rotación y zoom */}
+        {/* Mapa 2D MapLibre con estilo claro Carto Voyager */}
         <InteractiveMap
           restaurants={displayedRestaurants}
           selectedRestaurant={selectedRestaurant}
           onSelectRestaurant={(rest) => {
             setSelectedRestaurant(rest);
-            setSheetState("peek");
+            // Al hacer clic en un pin, la bandeja aparece en Nivel 1 (modo compacto)
+            setSheetLevel(1);
           }}
-          isUVMode={isUVMode}
         />
 
-        {/* Bottom Sheet Colapsable Multiestado (Dock 72px / Vista Previa 220px / Detalle Expandido) */}
+        {/* =========================================================================
+            BOTTOM SHEET DE 3 NIVELES CON ARRASTRE TÁCTIL (Draggable Sheet)
+            - Nivel 1: Mini-dock compacto (88px)
+            - Nivel 2: Ficha rápida con acciones 'Calificar' y 'Ver Ficha' (250px)
+            - Nivel 3: Detalle sanitario completo con botón de retroceso (82vh)
+            ========================================================================= */}
         <section
-          className={`relative z-20 w-full ocean-glass-card rounded-t-2xl px-space-md border-t border-outline-variant/30 mt-auto transition-all duration-300 shadow-2xl ${
-            sheetState === "collapsed"
-              ? "pt-2 pb-16"
-              : sheetState === "expanded"
-              ? "pt-2 pb-20 max-h-[72vh] overflow-y-auto"
-              : "pt-2.5 pb-20"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className={`relative z-20 w-full bg-surface-container-lowest/95 backdrop-blur-xl rounded-t-3xl px-4 border-t border-outline-variant/30 mt-auto transition-all duration-300 ease-out shadow-[0_-8px_30px_rgba(0,0,0,0.12)] flex flex-col ${
+            sheetLevel === 1
+              ? "h-[92px] pb-16"
+              : sheetLevel === 2
+              ? "h-[255px] pb-16"
+              : "h-[82vh] pb-20 overflow-hidden"
           }`}
         >
-          {/* Tirador Táctil Superior Interactivo */}
+          {/* Tirador Táctil Superior (Drag Handle con hit-area accesible de 36px) */}
           <div
-            onClick={() =>
-              setSheetState(sheetState === "collapsed" ? "peek" : "collapsed")
-            }
-            className="w-full pt-1 pb-2 flex flex-col justify-center items-center cursor-pointer group"
-            title={
-              sheetState === "collapsed"
-                ? "Toca para expandir ficha"
-                : "Toca para replegar a modo mapa libre"
-            }
+            onClick={() => {
+              setSheetLevel((prev) => (prev === 1 ? 2 : prev === 2 ? 3 : 1));
+            }}
+            className="w-full pt-2.5 pb-2 flex flex-col justify-center items-center cursor-pointer select-none group"
+            title="Desliza o toca para cambiar el nivel de la ficha"
           >
-            <div className="w-12 h-1 bg-outline-variant/70 rounded-full group-hover:bg-primary transition-colors" />
-            <span className="text-[9px] font-label-caps text-outline group-hover:text-primary mt-1 tracking-wider uppercase">
-              {sheetState === "collapsed" ? "▲ Toca para ver detalles" : "▼ Replegar mapa"}
-            </span>
+            <div className="w-12 h-1.5 bg-outline-variant/70 rounded-full group-hover:bg-primary transition-colors" />
+            <div className="flex items-center gap-1 text-[10px] font-label-caps text-outline group-hover:text-primary mt-1 tracking-wider uppercase">
+              {sheetLevel === 1 && (
+                <>
+                  <span>Desliza para opinar y ver opciones</span>
+                  <span className="material-symbols-outlined text-[13px]">expand_less</span>
+                </>
+              )}
+              {sheetLevel === 2 && (
+                <>
+                  <span>Desliza para ver ficha completa</span>
+                  <span className="material-symbols-outlined text-[13px]">expand_less</span>
+                </>
+              )}
+              {sheetLevel === 3 && (
+                <>
+                  <span>Desliza hacia abajo para replegar</span>
+                  <span className="material-symbols-outlined text-[13px]">expand_more</span>
+                </>
+              )}
+            </div>
           </div>
 
-          {/* VISTA COLAPSADA (MINI-DOCK): 100% visibilidad del mapa */}
-          {sheetState === "collapsed" ? (
+          {/* -----------------------------------------------------------------
+              NIVEL 1: MINI-DOCK (Resumen esencial: Nombre, Dirección y Puntuación)
+              ----------------------------------------------------------------- */}
+          {sheetLevel === 1 && (
             <div
-              onClick={() => setSheetState("peek")}
-              className="flex items-center justify-between cursor-pointer py-1"
+              onClick={() => setSheetLevel(2)}
+              className="flex items-center justify-between cursor-pointer py-1 active:scale-[0.99] transition-transform"
             >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-secondary-container/80 flex items-center justify-center text-primary border border-primary/40 shrink-0">
-                  <span className="material-symbols-outlined text-[17px]">restaurant</span>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-teal-500/10 text-teal-700 flex items-center justify-center border border-teal-500/30 shrink-0">
+                  <span className="material-symbols-outlined text-[20px]">
+                    restaurant
+                  </span>
                 </div>
                 <div>
-                  <h3 className="font-headline-sm text-[15px] text-on-surface font-semibold leading-tight">
+                  <h3 className="font-headline-sm text-[16px] text-on-surface font-semibold leading-snug">
                     {selectedRestaurant.shortName}
                   </h3>
-                  <span className="text-[11px] text-outline block">
-                    {selectedRestaurant.city} • {selectedRestaurant.cuisine}
-                  </span>
+                  <p className="text-[12px] text-outline flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[13px]">
+                      location_on
+                    </span>
+                    <span className="truncate max-w-[190px]">
+                      {selectedRestaurant.location || selectedRestaurant.city}
+                    </span>
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <div className="px-2.5 py-1 rounded-full bg-secondary-container/60 border border-primary/40 shadow-sm flex items-center gap-1">
-                  <span className="material-symbols-outlined text-primary text-[14px]">
-                    verified_user
-                  </span>
-                  <span className="font-metric-display text-[15px] font-bold text-on-surface leading-none">
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="px-3 py-1 rounded-full bg-teal-50 text-teal-900 border border-teal-200 shadow-sm flex items-center gap-1">
+                  <span className="text-teal-600 font-bold text-[13px]">★</span>
+                  <span className="font-metric-display text-[15px] font-bold leading-none">
                     {selectedRestaurant.grade}
                   </span>
                 </div>
@@ -202,173 +255,211 @@ export default function MapPage() {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSheetState("peek");
+                    setSheetLevel(2);
                   }}
-                  className="w-7 h-7 rounded-full bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-primary hover:bg-primary-container"
-                  aria-label="Expandir tarjeta"
+                  className="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-primary hover:bg-primary-container"
+                  aria-label="Subir a opciones"
                 >
-                  <span className="material-symbols-outlined text-[17px]">expand_less</span>
+                  <span className="material-symbols-outlined text-[18px]">
+                    expand_less
+                  </span>
                 </button>
               </div>
             </div>
-          ) : (
-            <>
-              {/* Fila Principal: Nombre y Puntuación */}
-              <div className="flex items-start justify-between gap-3 mb-1.5">
-                <div className="flex-1 pr-1">
-                  <h2 className="font-headline-lg-mobile text-[21px] text-on-surface tracking-tight leading-tight">
+          )}
+
+          {/* -----------------------------------------------------------------
+              NIVEL 2: FICHA RÁPIDA (Acciones claras: 'Calificar' y 'Ver Ficha')
+              ----------------------------------------------------------------- */}
+          {sheetLevel === 2 && (
+            <div className="flex flex-col justify-between flex-1 py-1 animate-in fade-in duration-200">
+              {/* Encabezado limpio */}
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h2 className="font-headline-sm text-[19px] text-on-surface font-bold leading-snug">
                     {selectedRestaurant.name}
                   </h2>
-                  <p className="font-body-sm text-[12px] text-secondary font-light mt-0.5">
-                    {selectedRestaurant.tagline}
+                  <p className="text-[12px] text-outline flex items-center gap-1 mt-0.5">
+                    <span className="material-symbols-outlined text-[13px]">
+                      location_on
+                    </span>
+                    <span>{selectedRestaurant.location}</span>
+                    <span>•</span>
+                    <span>{selectedRestaurant.cuisine}</span>
                   </p>
                 </div>
 
-                <div className="shrink-0 flex flex-col items-end">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-container/60 border border-primary/40 shadow-[0_0_12px_rgba(123,153,160,0.25)]">
-                    <span
-                      className="material-symbols-outlined text-primary text-[16px]"
-                      data-icon="verified_user"
-                      style={{ fontVariationSettings: "'FILL' 1" }}
-                    >
-                      verified_user
-                    </span>
-                    <span className="font-metric-display text-[18px] leading-none text-on-surface font-semibold tracking-tight">
-                      {selectedRestaurant.grade}
-                    </span>
-                  </div>
-                  <span className="font-label-caps text-[8px] text-tertiary-fixed-dim mt-0.5 tracking-wider uppercase">
-                    {selectedRestaurant.auditCycle}
+                <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-teal-50 text-teal-900 border border-teal-200 shadow-sm shrink-0">
+                  <span className="text-teal-600 font-bold text-[14px]">★</span>
+                  <span className="font-metric-display text-[17px] font-bold leading-none">
+                    {selectedRestaurant.grade}
                   </span>
                 </div>
               </div>
 
-              {/* Barra de Metadatos */}
-              <div className="flex items-center gap-2 text-outline font-label-md text-[11px] pb-2 border-b border-outline-variant/20 mb-2">
-                <span className="flex items-center gap-1 text-on-surface-variant font-medium">
-                  <span className="material-symbols-outlined text-[13px]" data-icon="restaurant">
-                    restaurant
-                  </span>
-                  {selectedRestaurant.cuisine}
+              {/* Conteo de opiniones y resumen de comensales */}
+              <div className="flex items-center gap-2 py-1.5 px-3 rounded-xl bg-surface-container-high/60 border border-outline-variant/30 text-[12px] text-on-surface-variant">
+                <span className="material-symbols-outlined text-[16px] text-primary">
+                  reviews
                 </span>
-                <span className="text-outline-variant">•</span>
-                <span>{selectedRestaurant.subCuisine}</span>
-                <span className="text-outline-variant">•</span>
-                <span className="flex items-center gap-0.5 truncate">
-                  <span className="material-symbols-outlined text-[13px]" data-icon="location_on">
-                    location_on
-                  </span>
-                  {selectedRestaurant.location}
+                <span>
+                  {selectedRestaurant.reviews.length > 0
+                    ? `${selectedRestaurant.reviews.length} opiniones verificadas de comensales`
+                    : "Sé el primero en calificar este local"}
                 </span>
               </div>
 
-              {/* Descripción adicional si está en estado expandido */}
-              {sheetState === "expanded" && (
-                <p className="text-[12px] text-on-surface-variant leading-relaxed mb-3 p-2.5 rounded-xl bg-surface-container-low/60 border border-outline-variant/30">
-                  {selectedRestaurant.description}
-                </p>
-              )}
-
-              {/* Grilla Bento de 4 Métricas Clave */}
-              <div className="grid grid-cols-2 gap-2 mb-2.5">
-                <div className="p-2 rounded-lg bg-surface-container-low/70 border border-outline-variant/30 flex items-center justify-between">
-                  <div>
-                    <div className="font-label-caps text-[8.5px] text-outline uppercase tracking-wider">
-                      Pureza de Superficies
-                    </div>
-                    <div className="font-metric-sm text-[14px] text-on-surface font-medium mt-0.5">
-                      {selectedRestaurant.metrics.surfacePurity} / 100
-                    </div>
-                  </div>
-                  <span className="material-symbols-outlined text-primary/80 text-[18px]" data-icon="sanitizer">
-                    sanitizer
-                  </span>
-                </div>
-
-                <div className="p-2 rounded-lg bg-surface-container-low/70 border border-outline-variant/30 flex items-center justify-between">
-                  <div>
-                    <div className="font-label-caps text-[8.5px] text-outline uppercase tracking-wider">
-                      Cadena de Frío
-                    </div>
-                    <div className="font-metric-sm text-[14px] text-on-surface font-medium mt-0.5">
-                      {selectedRestaurant.metrics.coldChain}
-                    </div>
-                  </div>
-                  <span className="material-symbols-outlined text-primary/80 text-[18px]" data-icon="thermostat">
-                    thermostat
-                  </span>
-                </div>
-
-                <div className="p-2 rounded-lg bg-surface-container-low/70 border border-outline-variant/30 flex items-center justify-between">
-                  <div>
-                    <div className="font-label-caps text-[8.5px] text-outline uppercase tracking-wider">
-                      Calidad del Aire
-                    </div>
-                    <div className="font-metric-sm text-[14px] text-on-surface font-medium mt-0.5">
-                      {selectedRestaurant.metrics.airQuality}
-                    </div>
-                  </div>
-                  <span className="material-symbols-outlined text-primary/80 text-[18px]" data-icon="air">
-                    air
-                  </span>
-                </div>
-
-                <div className="p-2 rounded-lg bg-surface-container-low/70 border border-outline-variant/30 flex items-center justify-between">
-                  <div>
-                    <div className="font-label-caps text-[8.5px] text-outline uppercase tracking-wider">
-                      Infracciones Sanitarias
-                    </div>
-                    <div className="font-metric-sm text-[14px] text-primary font-medium mt-0.5">
-                      {selectedRestaurant.metrics.infractions} Reportadas
-                    </div>
-                  </div>
-                  <span
-                    className="material-symbols-outlined text-primary text-[18px]"
-                    data-icon="check_circle"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    check_circle
-                  </span>
-                </div>
-              </div>
-
-              {/* Botones de Acción */}
-              <div className="flex items-center gap-2">
-                <Link
-                  href={`/restaurant/${selectedRestaurant.id}`}
-                  className="flex-1 py-2.5 px-3 rounded-full bg-primary-container text-on-primary-container font-label-md text-[12.5px] font-semibold text-center flex items-center justify-center gap-1.5 hover:shadow-[0_0_16px_rgba(166,192,198,0.4)] transition-all active:scale-95 duration-150"
-                >
-                  <span className="material-symbols-outlined text-[16px]" data-icon="assignment_turned_in">
-                    assignment_turned_in
-                  </span>
-                  <span>Ver Dossier Sanitario</span>
-                </Link>
-
+              {/* Botones de Acción Directos y Destacados */}
+              <div className="flex items-center gap-2 pt-1 pb-2">
                 <button
                   type="button"
                   onClick={() => setIsAuditModalOpen(true)}
-                  className="py-2.5 px-3.5 rounded-full bg-surface-container/60 border border-outline-variant/40 text-on-surface font-label-md text-[12.5px] font-medium hover:border-primary transition-all active:scale-95 duration-150 flex items-center justify-center gap-1"
+                  className="flex-1 py-2.5 px-4 rounded-full bg-primary text-on-primary font-label-md text-[13px] font-semibold text-center flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all"
                 >
-                  <span className="material-symbols-outlined text-[15px]" data-icon="add">
-                    add
+                  <span className="material-symbols-outlined text-[17px]" data-icon="rate_review">
+                    rate_review
                   </span>
-                  <span>Auditar</span>
+                  <span>Calificar / Opinar</span>
                 </button>
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setSheetState(sheetState === "expanded" ? "peek" : "expanded")
-                  }
-                  className="p-2 rounded-full bg-surface-container/60 border border-outline-variant/40 text-outline hover:text-primary transition-all active:scale-95"
-                  title={sheetState === "expanded" ? "Mostrar menos" : "Ver más detalles"}
+                  onClick={() => setSheetLevel(3)}
+                  className="flex-1 py-2.5 px-4 rounded-full bg-surface-container-high border border-outline-variant/60 text-on-surface font-label-md text-[13px] font-medium text-center flex items-center justify-center gap-1.5 hover:border-primary active:scale-95 transition-all"
                 >
-                  <span className="material-symbols-outlined text-[18px]">
-                    {sheetState === "expanded" ? "unfold_less" : "unfold_more"}
+                  <span className="material-symbols-outlined text-[17px]" data-icon="info">
+                    info
                   </span>
+                  <span>Ver Ficha Completa</span>
                 </button>
               </div>
-            </>
+            </div>
+          )}
+
+          {/* -----------------------------------------------------------------
+              NIVEL 3: DETALLE COMPLETO (Historial, Higiene y botón de Volver)
+              ----------------------------------------------------------------- */}
+          {sheetLevel === 3 && (
+            <div className="flex flex-col flex-1 overflow-hidden animate-in fade-in duration-200">
+              {/* Barra de cabecera con botón de Volver al Mapa */}
+              <div className="flex items-center justify-between pb-2 border-b border-outline-variant/20 mb-2 shrink-0">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSheetLevel(1)}
+                    className="flex items-center gap-1 text-[12.5px] font-semibold text-primary px-3 py-1 rounded-full bg-primary-container/70 border border-primary/30 hover:bg-primary-container active:scale-95 transition-all"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">
+                      arrow_downward
+                    </span>
+                    <span>Volver al mapa</span>
+                  </button>
+                  <span className="text-[12px] text-outline font-medium">
+                    Ficha del Local
+                  </span>
+                </div>
+
+                <Link
+                  href={`/restaurant/${selectedRestaurant.id}`}
+                  className="text-[12px] font-semibold text-primary underline"
+                >
+                  Abrir vista completa
+                </Link>
+              </div>
+
+              {/* Contenido scrolleable del Nivel 3 */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3.5 pr-1 pb-16">
+                <div>
+                  <h2 className="font-headline-sm text-[20px] text-on-surface font-bold">
+                    {selectedRestaurant.name}
+                  </h2>
+                  <p className="text-[12.5px] text-outline mt-0.5">
+                    {selectedRestaurant.location} • {selectedRestaurant.city}
+                  </p>
+                </div>
+
+                {/* Métricas sanitarias trasladadas aquí */}
+                <div>
+                  <h4 className="text-[11px] font-label-caps uppercase tracking-wider text-outline mb-2">
+                    Detalles Sanitarios y de Bioseguridad
+                  </h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="p-2.5 rounded-xl bg-surface-container-high/70 border border-outline-variant/40 flex items-center justify-between">
+                      <div>
+                        <div className="text-[9px] font-label-caps text-outline uppercase">
+                          Pureza Superficies
+                        </div>
+                        <div className="text-[14px] font-bold text-on-surface mt-0.5">
+                          {selectedRestaurant.metrics.surfacePurity} / 100
+                        </div>
+                      </div>
+                      <span className="material-symbols-outlined text-primary text-[19px]">
+                        sanitizer
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-surface-container-high/70 border border-outline-variant/40 flex items-center justify-between">
+                      <div>
+                        <div className="text-[9px] font-label-caps text-outline uppercase">
+                          Cadena de Frío
+                        </div>
+                        <div className="text-[14px] font-bold text-on-surface mt-0.5">
+                          {selectedRestaurant.metrics.coldChain}
+                        </div>
+                      </div>
+                      <span className="material-symbols-outlined text-primary text-[19px]">
+                        thermostat
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-surface-container-high/70 border border-outline-variant/40 flex items-center justify-between">
+                      <div>
+                        <div className="text-[9px] font-label-caps text-outline uppercase">
+                          Calidad del Aire
+                        </div>
+                        <div className="text-[14px] font-bold text-on-surface mt-0.5">
+                          {selectedRestaurant.metrics.airQuality}
+                        </div>
+                      </div>
+                      <span className="material-symbols-outlined text-primary text-[19px]">
+                        air
+                      </span>
+                    </div>
+
+                    <div className="p-2.5 rounded-xl bg-surface-container-high/70 border border-outline-variant/40 flex items-center justify-between">
+                      <div>
+                        <div className="text-[9px] font-label-caps text-outline uppercase">
+                          Infracciones
+                        </div>
+                        <div className="text-[14px] font-bold text-teal-700 mt-0.5">
+                          {selectedRestaurant.metrics.infractions} Reportadas
+                        </div>
+                      </div>
+                      <span className="material-symbols-outlined text-teal-600 text-[19px]">
+                        check_circle
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Descripción comunitaria */}
+                <p className="text-[12.5px] text-on-surface-variant leading-relaxed p-3 rounded-xl bg-surface-container-low border border-outline-variant/30">
+                  {selectedRestaurant.description}
+                </p>
+
+                {/* Botón rápido para auditar desde Nivel 3 */}
+                <button
+                  type="button"
+                  onClick={() => setIsAuditModalOpen(true)}
+                  className="w-full py-3 px-4 rounded-full bg-primary text-on-primary font-label-md text-[13.5px] font-semibold text-center flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all"
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    rate_review
+                  </span>
+                  <span>Calificar o Dejar Reseña</span>
+                </button>
+              </div>
+            </div>
           )}
         </section>
       </main>

@@ -35,9 +35,9 @@ export default function RestaurantDetailPage() {
   return (
     <>
       <TopAppBar
-        title="Dossier Sanitario"
+        title="Ficha del Local"
         showBack={true}
-        subtitle="Auditoría de Bioseguridad"
+        subtitle="Información y Reseñas"
       />
 
       <main className="flex-1 flex flex-col pb-28 overflow-x-hidden">
@@ -614,7 +614,7 @@ export default function RestaurantDetailPage() {
               </div>
             ) : (
               <div className="p-4 rounded-xl bg-surface-container-low/60 border border-outline-variant/30 text-center text-outline text-[12px]">
-                Aún no hay reseñas registradas para este restaurante. Sé el primer inspector en auditarlo.
+                Aún no hay reseñas registradas para este restaurante. Sé el primero en calificarlo y opinar.
               </div>
             )}
           </section>

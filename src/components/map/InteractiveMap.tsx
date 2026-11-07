@@ -13,14 +13,13 @@ interface InteractiveMapProps {
   restaurants: Restaurant[];
   selectedRestaurant: Restaurant;
   onSelectRestaurant: (restaurant: Restaurant) => void;
-  isUVMode: boolean;
+  isUVMode?: boolean;
 }
 
 export function InteractiveMap({
   restaurants,
   selectedRestaurant,
   onSelectRestaurant,
-  isUVMode,
 }: InteractiveMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<maplibregl.Map | null>(null);
@@ -29,19 +28,22 @@ export function InteractiveMap({
   useEffect(() => {
     if (!mapContainer.current || mapInstance.current) return;
 
-    // Inicializar MapLibre con estilo libre oscuro Carto Dark Matter
+    // Inicializar MapLibre con estilo claro y limpio 2D Carto Voyager (estilo Google Maps / inDrive)
     const map = new maplibregl.Map({
       container: mapContainer.current,
-      style: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+      style: "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
       center: [selectedRestaurant.lng, selectedRestaurant.lat],
       zoom: 14.5,
-      pitch: 35,
-      bearing: -10,
+      pitch: 0,
+      maxPitch: 0,
+      bearing: 0,
+      dragRotate: false,
+      touchPitch: false,
       attributionControl: false,
     });
 
     map.addControl(
-      new maplibregl.NavigationControl({ showCompass: true }),
+      new maplibregl.NavigationControl({ showCompass: false }),
       "top-right"
     );
 
@@ -53,7 +55,7 @@ export function InteractiveMap({
     };
   }, []);
 
-  // Actualizar marcadores cuando cambian los restaurantes o el seleccionado
+  // Actualizar marcadores con icono de cubiertos de restaurante (estilo Google Maps)
   useEffect(() => {
     const map = mapInstance.current;
     if (!map) return;
@@ -65,42 +67,36 @@ export function InteractiveMap({
     restaurants.forEach((restaurant) => {
       const isSelected = restaurant.id === selectedRestaurant.id;
 
-      // Crear elemento HTML personalizado para el pin con área táctil accesible (mínimo 48px)
+      // Elemento HTML del marcador
       const el = document.createElement("div");
-      el.className = "cursor-pointer group flex flex-col items-center justify-center p-2 -m-2 min-w-[48px] min-h-[48px]";
-
-      const badgeColor =
-        restaurant.level === "alerta"
-          ? "border-red-600/90 bg-[#200808] text-rose-300"
-          : restaurant.level === "filtrado"
-          ? "border-orange-500/80 bg-[#1f140a] text-orange-300"
-          : restaurant.level === "antiseptico"
-          ? "border-teal-500/80 bg-[#071f1e] text-teal-300"
-          : restaurant.level === "esterilizado"
-          ? "border-purple-400/80 bg-[#160d26] text-purple-300"
-          : "border-primary bg-secondary-container text-primary";
+      el.className =
+        "cursor-pointer group flex flex-col items-center justify-center p-1 -m-1 transition-transform select-none";
 
       if (isSelected) {
+        // Marcador activo: Etiqueta nítida sin puntos previos + Pin destacado con cubiertos
         el.innerHTML = `
-          <div class="mb-1.5 px-2.5 py-1 rounded-full bg-[#041016]/95 border border-primary/50 shadow-2xl flex items-center gap-1.5 whitespace-nowrap">
-            <span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_#adccd3]"></span>
-            <span class="text-[10px] font-semibold tracking-wider text-[#d8e4ee]">${restaurant.shortName} • ${restaurant.grade}</span>
+          <div class="mb-1 px-3 py-1 rounded-full bg-slate-900 text-white shadow-xl flex items-center gap-1.5 whitespace-nowrap border border-slate-700 animate-in fade-in zoom-in-95 duration-200">
+            <span class="text-[11px] font-semibold tracking-tight text-white">${restaurant.shortName}</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-teal-500 text-slate-950">${restaurant.grade}</span>
           </div>
           <div class="relative flex items-center justify-center">
-            <div class="w-10 h-10 rounded-full bg-[#7b99a0]/25 beacon-pulse flex items-center justify-center">
-              <div class="w-7 h-7 rounded-full bg-[#adccd3] text-[#16353b] flex items-center justify-center font-bold text-[11px] shadow-lg border border-white/20">
-                ★
-              </div>
+            <div class="w-10 h-10 rounded-full bg-teal-600/30 flex items-center justify-center animate-ping absolute"></div>
+            <div class="w-9 h-9 rounded-full bg-teal-600 text-white flex items-center justify-center shadow-lg border-2 border-white relative z-10">
+              <span class="material-symbols-outlined text-[19px]">restaurant</span>
             </div>
-            <div class="absolute -bottom-1 w-1.5 h-1.5 rotate-45 bg-[#adccd3]"></div>
+            <div class="absolute -bottom-1.5 w-2.5 h-2.5 rotate-45 bg-teal-600 border-r-2 border-b-2 border-white z-0"></div>
           </div>
         `;
       } else {
+        // Marcador no seleccionado: Píldora limpia estilo Google Maps / inDrive con cubiertos y puntaje
         el.innerHTML = `
-          <div class="w-8 h-8 rounded-full border-2 ${badgeColor} flex items-center justify-center shadow-lg transition-transform hover:scale-110">
-            <span class="text-[11px] font-bold">${Math.round(restaurant.grade)}</span>
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white text-slate-800 border border-slate-200/90 shadow-md hover:scale-105 hover:shadow-lg transition-all duration-150">
+            <span class="material-symbols-outlined text-[15px] text-teal-600">restaurant</span>
+            <span class="text-[11px] font-bold text-slate-900">${restaurant.grade}</span>
           </div>
-          <span class="mt-1 text-[9.5px] font-semibold text-[#c1c8c9] bg-[#041016]/90 border border-white/10 px-2 py-0.5 rounded-full whitespace-nowrap tracking-wide shadow-sm">${restaurant.shortName}</span>
+          <span class="mt-0.5 text-[9.5px] font-medium text-slate-700 bg-white/95 px-1.5 py-0.5 rounded shadow-sm border border-slate-200/80 whitespace-nowrap max-w-[120px] truncate">
+            ${restaurant.shortName}
+          </span>
         `;
       }
 
@@ -124,7 +120,7 @@ export function InteractiveMap({
     map.flyTo({
       center: [selectedRestaurant.lng, selectedRestaurant.lat],
       zoom: 15,
-      padding: { bottom: 220, top: 0, left: 0, right: 0 },
+      padding: { bottom: 120, top: 0, left: 0, right: 0 },
       speed: 1.2,
       curve: 1.4,
       essential: true,
@@ -133,14 +129,7 @@ export function InteractiveMap({
 
   return (
     <div className="relative w-full h-full min-h-[360px] flex-1 overflow-hidden">
-      <div
-        ref={mapContainer}
-        className={`w-full h-full transition-all duration-700 ${
-          isUVMode
-            ? "filter hue-rotate-[240deg] contrast-[140%] brightness-[85%]"
-            : ""
-        }`}
-      />
+      <div ref={mapContainer} className="w-full h-full" />
     </div>
   );
 }

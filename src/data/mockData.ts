@@ -685,7 +685,7 @@ export const MOCK_PROFILE: InspectorProfile = {
   avatarUrl:
     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop",
   badges: [
-    { id: "b1", name: "Ojo Clínico", icon: "biotechnology", date: "Jul 2026" },
+    { id: "b1", name: "Observador Verificado", icon: "verified", date: "Jul 2026" },
     { id: "b2", name: "Recibo de Oro", icon: "receipt_long", date: "Ago 2026" },
     { id: "b3", name: "Veto Sanitario", icon: "shield", date: "Sep 2026" },
   ],
