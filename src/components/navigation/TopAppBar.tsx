@@ -7,6 +7,7 @@ interface TopAppBarProps {
   title?: string;
   showBack?: boolean;
   onFilterClick?: () => void;
+  onInstallClick?: () => void;
   subtitle?: string;
   isSearchMode?: boolean;
   searchQuery?: string;
@@ -18,6 +19,7 @@ export function TopAppBar({
   title = "Índice de Higiene",
   showBack = false,
   onFilterClick,
+  onInstallClick,
   subtitle,
   isSearchMode = false,
   searchQuery = "",
@@ -56,6 +58,22 @@ export function TopAppBar({
               </button>
             )}
           </div>
+
+          {onInstallClick && (
+            <button
+              type="button"
+              onClick={onInstallClick}
+              aria-label="Descargar o instalar app"
+              title="Descargar o instalar aplicación móvil"
+              className="w-10 h-10 rounded-full flex items-center justify-center bg-teal-500/15 border border-teal-500/40 text-teal-300 hover:bg-teal-500/25 transition-all active:scale-95 shadow-sm shrink-0 relative"
+            >
+              <span className="material-symbols-outlined text-[20px]" data-icon="install_mobile">
+                install_mobile
+              </span>
+              <span className="w-2 h-2 rounded-full bg-teal-400 absolute top-1 right-1 animate-ping" />
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-400 absolute top-1.5 right-1.5" />
+            </button>
+          )}
 
           {onFilterClick && (
             <button

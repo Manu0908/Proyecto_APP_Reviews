@@ -108,8 +108,8 @@ export function RestaurantSheet({
     drag.lastTime = e.timeStamp;
 
     let next = drag.startOffset + deltaY;
-    // Tope superior en nivel 2: la bandeja se comporta como una lengua anclada al fondo y no se despega
-    if (next < 0) next = 0;
+    // Estiramiento elástico hacia arriba: se estira como lengua dinámica y se auto-ajusta suavemente al soltarla
+    if (next < 0) next = next * 0.35;
     setDragOffset(Math.min(next, HIDDEN_OFFSET));
   };
 

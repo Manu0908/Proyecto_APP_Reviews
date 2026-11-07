@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import { TopAppBar } from "@/components/navigation/TopAppBar";
 import { BottomNavBar } from "@/components/navigation/BottomNavBar";
 import { QuickAuditModal } from "@/components/audit/QuickAuditModal";
 import { FilterModal } from "@/components/common/FilterModal";
+import { InstallAppModal } from "@/components/common/InstallAppModal";
 import {
   RestaurantSheet,
   OpenSheetLevel,
@@ -63,6 +64,35 @@ export default function MapPage() {
 
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+  const [canInstallNatively, setCanInstallNatively] = useState(false);
+  const deferredPromptRef = useRef<any>(null);
+
+  // Escuchar evento PWA beforeinstallprompt para instalación directa
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      deferredPromptRef.current = e;
+      setCanInstallNatively(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = useCallback(() => {
+    if (deferredPromptRef.current) {
+      deferredPromptRef.current.prompt();
+      deferredPromptRef.current.userChoice?.then(() => {
+        deferredPromptRef.current = null;
+        setCanInstallNatively(false);
+      });
+    } else {
+      setIsInstallModalOpen(true);
+    }
+  }, []);
 
   // Minitutorial inicial: indica al usuario que toque un restaurante en el mapa
   const [selectHintPending, dismissSelectHint] = useOneTimeHint("hint:select-restaurant:v1");
@@ -132,6 +162,7 @@ export default function MapPage() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Buscar restaurantes, cafés, zonas..."
+        onInstallClick={handleInstallClick}
         onFilterClick={() => setIsFilterModalOpen(true)}
       />
 
@@ -196,6 +227,18 @@ export default function MapPage() {
         zeroInfractionsOnly={zeroInfractionsOnly}
         onToggleZeroInfractions={setZeroInfractionsOnly}
         onReset={handleResetFilters}
+      />
+
+      {/* Modal de descarga / instalación PWA */}
+      <InstallAppModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
+        canInstallNatively={canInstallNatively}
+        onNativeInstall={() => {
+          if (deferredPromptRef.current) {
+            deferredPromptRef.current.prompt();
+          }
+        }}
       />
     </div>
   );
