@@ -1,13 +1,23 @@
 "use client";
 
+import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useRef } from "react";
 import * as maplibregl from "maplibre-gl";
 import { Restaurant } from "@/types";
+import { COLOMBIA_BOUNDS } from "@/lib/validations/schemas";
 
 // Configurar la URL estática del worker de MapLibre en public para Webpack/Next.js
 if (typeof window !== "undefined") {
   maplibregl.setWorkerUrl("/maplibre-gl-worker.js");
 }
+
+/** Bounding Box geográfico de Colombia para restringir el paneo innecesario */
+const COLOMBIA_MAX_BOUNDS: [[number, number], [number, number]] = [
+  [COLOMBIA_BOUNDS.minLng - 2.0, COLOMBIA_BOUNDS.minLat - 2.0],
+  [COLOMBIA_BOUNDS.maxLng + 2.0, COLOMBIA_BOUNDS.maxLat + 2.0],
+];
+
+const CLUSTER_SOURCE_ID = "restaurants-supercluster";
 
 interface InteractiveMapProps {
   restaurants: Restaurant[];
@@ -32,6 +42,26 @@ function escapeHtml(value: string): string {
     .replace(/'/g, "&#39;");
 }
 
+function buildGeoJSON(restaurants: Restaurant[]) {
+  return {
+    type: "FeatureCollection" as const,
+    features: restaurants.map((r) => ({
+      type: "Feature" as const,
+      geometry: {
+        type: "Point" as const,
+        coordinates: [r.lng, r.lat] as [number, number],
+      },
+      properties: {
+        id: r.id,
+        name: r.name,
+        shortName: r.shortName,
+        grade: r.grade,
+        level: r.level,
+      },
+    })),
+  };
+}
+
 export function InteractiveMap({
   restaurants,
   selectedRestaurant,
@@ -43,6 +73,7 @@ export function InteractiveMap({
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
+  const restaurantsRef = useRef<Restaurant[]>(restaurants);
 
   // Callbacks en refs: los listeners del mapa y de los marcadores siempre llaman
   // a la versión más reciente sin tener que recrearse en cada render del padre.
@@ -53,6 +84,7 @@ export function InteractiveMap({
     onSelectRef.current = onSelectRestaurant;
     onMapClickRef.current = onMapClick;
     onLoadRef.current = onLoad;
+    restaurantsRef.current = restaurants;
   });
 
   const selectedId = selectedRestaurant?.id ?? null;
@@ -67,15 +99,20 @@ export function InteractiveMap({
     if (!mapContainer.current || mapInstance.current) return;
 
     const initialCenter = initialCenterRef.current;
+    const styleUrl =
+      process.env.NEXT_PUBLIC_CARTO_STYLE_URL ||
+      "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
 
-    // Estilo oscuro Carto Dark Matter, bloqueado en 2D (sin inclinación ni rotación)
+    // Estilo oscuro Carto Dark Matter, bloqueado en 2D, con límites en Colombia
+    // y atribución legal ODbL compacta activada.
     const map = new maplibregl.Map({
       container: mapContainer.current,
-      style: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+      style: styleUrl,
       center: initialCenter
         ? [initialCenter.lng, initialCenter.lat]
-        : [-74.2, 4.6],
+        : [-74.2238, 11.1929],
       zoom: initialCenter ? 13 : 5,
+      maxBounds: COLOMBIA_MAX_BOUNDS,
       pitch: 0,
       maxPitch: 0,
       bearing: 0,
@@ -86,12 +123,58 @@ export function InteractiveMap({
 
     map.touchZoomRotate.disableRotation();
 
+    // Atribución legal obligatoria ODbL (OpenStreetMap & CARTO) en formato compacto
+    map.addControl(
+      new maplibregl.AttributionControl({ compact: true }),
+      "bottom-right"
+    );
+
     map.addControl(
       new maplibregl.NavigationControl({ showCompass: false }),
       "top-right"
     );
 
+    map.addControl(
+      new maplibregl.GeolocateControl({
+        positionOptions: { enableHighAccuracy: true },
+        trackUserLocation: true,
+      }),
+      "top-right"
+    );
+
     map.on("load", () => {
+      // Fuente GeoJSON con Supercluster en Web Worker para agrupación espacial a gran escala
+      if (!map.getSource(CLUSTER_SOURCE_ID)) {
+        map.addSource(CLUSTER_SOURCE_ID, {
+          type: "geojson",
+          data: buildGeoJSON(restaurantsRef.current),
+          cluster: true,
+          clusterMaxZoom: 9,
+          clusterRadius: 45,
+        });
+
+        map.addLayer({
+          id: "clusters-halo",
+          type: "circle",
+          source: CLUSTER_SOURCE_ID,
+          filter: ["has", "point_count"],
+          paint: {
+            "circle-color": "rgba(173, 204, 211, 0.22)",
+            "circle-radius": [
+              "step",
+              ["get", "point_count"],
+              20,
+              5,
+              26,
+              15,
+              32,
+            ],
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "rgba(173, 204, 211, 0.5)",
+          },
+        });
+      }
+
       onLoadRef.current?.();
     });
 
@@ -112,10 +195,17 @@ export function InteractiveMap({
     };
   }, []);
 
-  // Marcadores: se recrean solo cuando cambia la lista o el restaurante seleccionado
+  // Sincronizar fuente Supercluster y marcadores con icono de cubiertos
   useEffect(() => {
     const map = mapInstance.current;
     if (!map) return;
+
+    const clusterSource = map.getSource(
+      CLUSTER_SOURCE_ID
+    ) as maplibregl.GeoJSONSource | undefined;
+    if (clusterSource) {
+      clusterSource.setData(buildGeoJSON(restaurants));
+    }
 
     markersRef.current.forEach((m) => m.remove());
     markersRef.current = [];
@@ -127,7 +217,10 @@ export function InteractiveMap({
 
       const el = document.createElement("button");
       el.type = "button";
-      el.setAttribute("aria-label", `${restaurant.shortName}, puntuación ${restaurant.grade}`);
+      el.setAttribute(
+        "aria-label",
+        `${restaurant.shortName}, puntuación ${restaurant.grade}`
+      );
       el.className =
         "cursor-pointer flex flex-col items-center justify-end min-w-[48px] min-h-[48px] bg-transparent border-0 p-0 select-none";
 

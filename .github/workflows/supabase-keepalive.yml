@@ -1,0 +1,31 @@
+name: Supabase Free Tier Keep-Alive
+
+on:
+  schedule:
+    # Se ejecuta automáticamente cada 4 días a las 06:00 UTC (previene pausa de 7 días de Supabase Free)
+    - cron: "0 6 */4 * *"
+  workflow_dispatch:
+
+jobs:
+  ping-health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ping Application Health Endpoint & Supabase REST
+        env:
+          APP_HEALTH_URL: ${{ secrets.APP_HEALTH_URL }}
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -n "$APP_HEALTH_URL" ]; then
+            echo "Realizando ping Keep-Alive a $APP_HEALTH_URL..."
+            curl --fail --silent --show-error --max-time 15 "$APP_HEALTH_URL"
+          elif [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_ANON_KEY" ]; then
+            echo "Realizando consulta ligera Keep-Alive directo a Supabase REST..."
+            curl --fail --silent --show-error --max-time 15 \
+              -H "apikey: $SUPABASE_ANON_KEY" \
+              -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+              "$SUPABASE_URL/rest/v1/restaurants?select=id&limit=1"
+          else
+            echo "Variables APP_HEALTH_URL / SUPABASE_URL aún no configuradas en GitHub Secrets. Saltando de forma segura."
+          fi

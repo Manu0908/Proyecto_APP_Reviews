@@ -1,4 +1,4 @@
-import { Restaurant, QuickAuditArea, InspectorProfile } from "@/types";
+import type { Restaurant, QuickAuditArea, InspectorProfile } from "../types/index.ts";
 
 export const MOCK_RESTAURANTS: Restaurant[] = [
   // 1. Santa Marta - Gaira (Los Maracuchos de Gaira)

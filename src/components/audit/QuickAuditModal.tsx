@@ -1,11 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { MOCK_AUDIT_AREAS } from "@/data/mockData";
+import {
+  calculateBiosecurityScore,
+  CRITICAL_VETO_THRESHOLD,
+  derivePillarScoresFromChips,
+} from "@/features/biosecurity/calculator";
+import { submitReviewAction } from "@/actions/reviews.actions";
+import {
+  CompressedImageResult,
+  compressImageToWebP,
+} from "@/lib/image-compression";
 
 interface QuickAuditModalProps {
   isOpen: boolean;
   onClose: () => void;
+  restaurantId?: string;
   restaurantName?: string;
   restaurantLocation?: string;
 }
@@ -13,7 +25,10 @@ interface QuickAuditModalProps {
 export function QuickAuditModal({
   isOpen,
   onClose,
+  restaurantId = "los-maracuchos-gaira",
+  restaurantName,
 }: QuickAuditModalProps) {
+  const router = useRouter();
   // Estado para acordeones abiertos
   const [openAccordions, setOpenAccordions] = useState<Record<string, boolean>>({
     bathrooms: true,
@@ -22,24 +37,39 @@ export function QuickAuditModal({
     hall: false,
   });
 
-  // Estado de chips seleccionados
+  // Estado de chips seleccionados (por defecto marcamos una base favorable para agilizar la inspección)
   const [selectedChips, setSelectedChips] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
     MOCK_AUDIT_AREAS.forEach((area) => {
-      area.chips.forEach((chip) => {
-        initial[chip.id] = chip.selectedByDefault;
+      area.chips.forEach((chip, idx) => {
+        initial[chip.id] = chip.selectedByDefault || idx < 3;
       });
     });
     return initial;
   });
 
-  // Estado de simulación de submit
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [serverFeedback, setServerFeedback] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [evidenceNote, setEvidenceNote] = useState("");
   const [hasReceipt, setHasReceipt] = useState(false);
+  const [compressedPhoto, setCompressedPhoto] =
+    useState<CompressedImageResult | null>(null);
+  const [isCompressingPhoto, setIsCompressingPhoto] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
+
+  const activeChipIds = Object.entries(selectedChips)
+    .filter(([, active]) => active)
+    .map(([id]) => id);
+
+  const livePillars = derivePillarScoresFromChips(activeChipIds);
+  const liveCalculation = calculateBiosecurityScore(livePillars);
+  const requiresAntiDefamationComment =
+    livePillars.scoreCritical <= CRITICAL_VETO_THRESHOLD;
 
   const toggleAccordion = (id: string) => {
     setOpenAccordions((prev) => ({
@@ -49,22 +79,73 @@ export function QuickAuditModal({
   };
 
   const toggleChip = (chipId: string) => {
+    setErrorMessage(null);
     setSelectedChips((prev) => ({
       ...prev,
       [chipId]: !prev[chipId],
     }));
   };
 
-  const handleSubmit = () => {
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setErrorMessage(null);
+    setIsCompressingPhoto(true);
+    try {
+      const result = await compressImageToWebP(file);
+      setCompressedPhoto(result);
+    } catch (err) {
+      setErrorMessage(
+        err instanceof Error
+          ? err.message
+          : "No se pudo comprimir la fotografía seleccionada."
+      );
+    } finally {
+      setIsCompressingPhoto(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleSubmit = async () => {
+    setErrorMessage(null);
+    setServerFeedback(null);
     setIsSubmitting(true);
-    setTimeout(() => {
+
+    try {
+      const response = await submitReviewAction({
+        restaurantId,
+        restaurantName,
+        scoreCritical: livePillars.scoreCritical,
+        scoreOperational: livePillars.scoreOperational,
+        scoreUtensils: livePillars.scoreUtensils,
+        scoreDining: livePillars.scoreDining,
+        selectedChips: activeChipIds,
+        comment: evidenceNote,
+        hasVerifiedReceipt: hasReceipt,
+        photoBytes: compressedPhoto?.compressedBytes,
+      });
+
+      if (!response.success) {
+        setErrorMessage(response.message);
+        setIsSubmitting(false);
+        return;
+      }
+
       setIsSubmitting(false);
       setIsSuccess(true);
+      setServerFeedback(response.message);
+      router.refresh();
+
       setTimeout(() => {
         setIsSuccess(false);
+        setServerFeedback(null);
         onClose();
-      }, 1400);
-    }, 800);
+      }, 1500);
+    } catch {
+      setIsSubmitting(false);
+      setErrorMessage("Error de red al procesar la auditoría sanitaria.");
+    }
   };
 
   return (
@@ -85,14 +166,16 @@ export function QuickAuditModal({
           <div className="w-12 h-1 rounded-full bg-outline-variant/70 hover:bg-outline transition-colors" />
         </div>
 
-        {/* Modal Header Section Simplificado: Título directo sin datos redundantes ni cálculo en vivo */}
+        {/* Modal Header Section */}
         <div className="px-5 pt-1 pb-3 flex items-center justify-between border-b border-outline-variant/20">
           <div>
             <h2 className="font-headline-sm text-[20px] text-on-surface font-semibold tracking-tight">
               Calificar y Opinar
             </h2>
             <p className="font-body-sm text-[12px] text-outline mt-0.5">
-              Marca los puntos observados en tu visita
+              {restaurantName
+                ? `Evaluando: ${restaurantName} (${liveCalculation.score} pts)`
+                : `Marca los puntos observados (${liveCalculation.score} pts)`}
             </p>
           </div>
 
@@ -196,11 +279,25 @@ export function QuickAuditModal({
             );
           })}
 
+          {/* Aviso de Veto Sanitario y Regla Anti-Difamación */}
+          {requiresAntiDefamationComment && (
+            <div className="p-3 rounded-xl bg-red-950/50 border border-rose-500/40 text-rose-200 text-[11.5px] leading-relaxed flex items-start gap-2">
+              <span className="material-symbols-outlined text-[16px] text-rose-300 shrink-0 mt-0.5">
+                warning
+              </span>
+              <span>
+                <strong>Veto Sanitario Crítico Activo (Tope 45.0 pts):</strong> Al reportar una deficiencia crítica en baños/salubridad, debes describir el hallazgo con al menos 30 caracteres ({evidenceNote.trim().length}/30).
+              </span>
+            </div>
+          )}
+
           {/* Notes & Evidence Section */}
           <div className="pt-2 space-y-2.5">
             <div className="flex items-center justify-between">
               <label className="font-label-caps text-outline block uppercase tracking-wider text-[10px]">
-                Comentario y Fotos (Opcional)
+                {requiresAntiDefamationComment
+                  ? "Justificación Sanitaria Obligatoria (Mín. 30 caracteres) *"
+                  : "Comentario y Fotos (Opcional)"}
               </label>
               <button
                 type="button"
@@ -222,17 +319,33 @@ export function QuickAuditModal({
               </button>
             </div>
 
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handlePhotoSelect}
+              className="hidden"
+            />
+
             <div className="relative flex items-center">
               <input
                 type="text"
                 value={evidenceNote}
-                onChange={(e) => setEvidenceNote(e.target.value)}
-                placeholder="Escribe tu opinión o detalles del local..."
+                onChange={(e) => {
+                  setErrorMessage(null);
+                  setEvidenceNote(e.target.value);
+                }}
+                placeholder={
+                  requiresAntiDefamationComment
+                    ? "Describe el hallazgo crítico (mínimo 30 caracteres)..."
+                    : "Escribe tu opinión o detalles del local..."
+                }
                 className="w-full bg-surface-container-lowest border border-outline-variant/60 rounded-full px-4 py-2.5 text-body-sm text-[13px] text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all pr-24 font-body-md"
               />
               <button
                 type="button"
-                onClick={() => alert("Cámara: Puedes adjuntar fotos de platos, instalaciones o recibo.")}
+                disabled={isCompressingPhoto}
+                onClick={() => fileInputRef.current?.click()}
                 className="absolute right-1.5 px-3 py-1.5 rounded-full bg-secondary-container hover:bg-secondary-container/90 text-primary font-label-md text-[12px] flex items-center space-x-1 transition-colors border border-outline-variant/40"
               >
                 <span
@@ -241,9 +354,35 @@ export function QuickAuditModal({
                 >
                   photo_camera
                 </span>
-                <span>Foto</span>
+                <span>{isCompressingPhoto ? "..." : "Foto"}</span>
               </button>
             </div>
+
+            {compressedPhoto && (
+              <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-secondary-container/40 border border-primary/30 text-[11px] text-on-surface">
+                <span className="flex items-center gap-1.5 truncate">
+                  <span className="material-symbols-outlined text-[14px] text-teal-400">
+                    check_circle
+                  </span>
+                  <span className="truncate">{compressedPhoto.file.name}</span>
+                </span>
+                <span className="text-primary font-metric-sm shrink-0 ml-2">
+                  {(compressedPhoto.compressedBytes / 1024).toFixed(1)} KB WebP (Sin EXIF)
+                </span>
+              </div>
+            )}
+
+            {errorMessage && (
+              <p className="text-[11.5px] text-rose-300 bg-red-950/60 border border-rose-500/40 rounded-xl px-3 py-2">
+                {errorMessage}
+              </p>
+            )}
+
+            {serverFeedback && (
+              <p className="text-[11.5px] text-teal-300 bg-teal-950/60 border border-teal-500/40 rounded-xl px-3 py-2">
+                {serverFeedback}
+              </p>
+            )}
           </div>
 
           {/* Submit CTA */}
